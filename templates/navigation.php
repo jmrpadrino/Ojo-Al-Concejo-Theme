@@ -108,23 +108,34 @@
     </div>
     <div class="main-nav">
         <div class="container-fluid top-container">
-            <div class="row pt-1 pb-1">
-                <div class="col-6">
+            <div class="row pt-1 pb-1 d-none d-sm-flex">
+                <div class="col-6 col-md-6">
                     <?php if(!empty($city_logo)){ ?>
                     <img class="img-fluid city-logo" width="200" src="<?php echo $city_logo; ?>">
                     <?php } ?>
                 </div>
-                <div class="col-6 text-right">
+                <div class="col-6 col-md-6 hidden-sm text-right">
                     <span class="logo-owner-nav">
                         Una iniciativa de: <img class="img-fluid company-logo mt-1" width="250" src="<?php echo THEME_URL . '/img/FCD-top.png'; ?>" alt="Observatorio Logo">
                     </span>
                 </div>
             </div>
+            <div class="row d-flex d-sm-none movile-nav-elements">
+                <div class="col-3 text-center pt-2">
+                    <span id="expand-menu" class="d-block mt-3"><i class="fas fa-bars fs-28 text-black-lighter"></i></span>
+                </div>
+                <div class="col-6 text-center">
+                    <?php if(!empty($city_logo)){ ?>
+                    <img class="img-fluid" width="100" src="<?php echo $city_logo; ?>">
+                    <?php } ?>
+                </div>
+            </div>
         </div>
         <?php if (!is_page()){ ?>
-        <div>
+        <div class="floating-nav">
+            <span class="close-mobile-nav d-block d-sm-none ta-r fs-32"><i class="far fa-times-circle"></i></span>
             <nav>
-                <ul class="w-100 d-flex justify-content-start list-no-style mb-0 mt-3 custom-nav">
+                <ul class="w-100 d-block d-sm-flex justify-content-start list-no-style mb-0 mt-3 custom-nav">
                     <li><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/'); ?>">Inicio</a></li>
                     <li><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/consejo-municipal/'); ?>">Concejo Municipal</a></li>
                     <li><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/evaluacion-de-gestion/'); ?>">Evaluación de gestión</a></li>

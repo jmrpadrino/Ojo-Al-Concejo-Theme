@@ -57,6 +57,10 @@ $org_politicas = new WP_Query($args);
         right: 120px;
         left: auto;
     }
+    .member-container.first-member .member-features{
+        top: -90px;
+        left: -44px;
+    }
 
     .member-feature-img-placeholder {
         width: 100px;
@@ -70,10 +74,11 @@ $org_politicas = new WP_Query($args);
     .member-feature-content-placeholder h2 {
         font-size: 20px;
     }
-
+    .member-container { transition: transform ease-in .2s; }
     .member-container:not(.deactivated):hover .member-features {
         display: flex;
     }
+    .member-container.activated { transform: scale(1.1); transition: transform ease-in .2s; }
 
     .info-sign-filters {
         color: <?php echo $city_primary_color; ?>;
@@ -135,7 +140,7 @@ $org_politicas = new WP_Query($args);
         </div>
     </div>
     <div class="row pb-3">
-        <div class="col-md-3">
+        <div class="col-md-3 mb-3">
             <div class="row">
                 <div class="col-md-2">
                     <a href="#" data-toggle="modal" data-target="#howtofilters">
@@ -149,6 +154,7 @@ $org_politicas = new WP_Query($args);
             <div class="modal fade" id="howtofilters">
                 <div class="modal-dialog modal-md">
                     <div class="modal-content">
+                        <div class="dismis-modals" data-dismiss="modal"><i class="far fa-times-circle text-blue-main"></i></div>
                         <div class="modal-body">
                             <div class="row">
                                 <img class="img-fluid" src="http://placehold.it/600x350?text=Manual%20para%20Filtros">
@@ -160,8 +166,8 @@ $org_politicas = new WP_Query($args);
             <div class="filter-box">
                 <form id="city_filters" role="form">
                     <div class="row filter-box-header bold">
-                        <div class="col-sm-5">Filtros</div>
-                        <div class="col-sm-7 text-right"> <span onclick="expandAll()"><span id="expand_text">|&nbsp;&nbsp;Expandir</span> todo</span></div>
+                        <div class="col-5 col-sm-5">Filtros</div>
+                        <div class="col-7 col-sm-7 text-right"> <span onclick="expandAll()"><span id="expand_text">|&nbsp;&nbsp;Expandir</span> todo</span></div>
                     </div>
                     <div class="row filter-box-content">
                         <div class="col-sm-12 p-3">
@@ -172,9 +178,9 @@ $org_politicas = new WP_Query($args);
                                             <h5 class="mb-0">
                                                 <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#circunscripcionc" aria-expanded="false" aria-controls="circunscripcionc">
                                                     <div class="row">
-                                                        <div class="col-sm-10 text-left fs-14">Circunscripción</div>
-                                                        <div class="col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
-                                                    </div>
+                                                        <div class="col-10  col-sm-10 text-left fs-14">Circunscripción</div>
+                                                        <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
+                                                    </d2>
                                                 </button>
                                             </h5>
                                         </div>
@@ -203,8 +209,8 @@ $org_politicas = new WP_Query($args);
                                         <h5 class="mb-0">
                                             <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#generoc" aria-expanded="false" aria-controls="generoc">
                                                 <div class="row">
-                                                    <div class="col-sm-10 text-left fs-14">Género</div>
-                                                    <div class="col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
+                                                    <div class="col-10 col-sm-10 text-left fs-14">Género</div>
+                                                    <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
                                                 </div>
                                             </button>
                                         </h5>
@@ -241,8 +247,8 @@ $org_politicas = new WP_Query($args);
                                             <h5 class="mb-0">
                                                 <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#organizacionc" aria-expanded="false" aria-controls="organizacionc">
                                                     <div class="row">
-                                                        <div class="col-sm-10 text-left fs-14">Organización Política</div>
-                                                        <div class="col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
+                                                        <div class="col-10 col-sm-10 text-left fs-14">Organización Política</div>
+                                                        <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
                                                     </div>
                                                 </button>
                                             </h5>
@@ -272,9 +278,9 @@ $org_politicas = new WP_Query($args);
                                         <h5 class="mb-0">
                                             <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#comisionc" aria-expanded="false" aria-controls="comisionc">
                                                 <div class="row">
-                                                    <div class="col-sm-10 text-left fs-14">Comisión</div>
-                                                    <div class="col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
-                                                </div>
+                                                    <div class="col-10 col-sm-10 text-left fs-14">Comisión</div>
+                                                    <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
+                                                </d2>
                                             </button>
                                         </h5>
                                     </div>
@@ -298,13 +304,13 @@ $org_politicas = new WP_Query($args);
                         </div>
                     </div>
                     <div class="row filter-box-footer">
-                        <div class="col-sm-4"></div>
-                        <div class="col-sm-8 text-right"><button id="clear_filters" type="reset" class="btn-clear-filters bold">|&nbsp;&nbsp;Borrar filtros</button></div>
+                        <div class="col-4 col-sm-4"></div>
+                        <div class="col-8 col-sm-8 text-right"><button id="clear_filters" type="reset" class="btn-clear-filters bold">|&nbsp;&nbsp;Borrar filtros</button></div>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8 offset-md-1">
             <!--
             <div class="row">
                 <div class="col-sm-12 text-right">
@@ -338,6 +344,7 @@ $org_politicas = new WP_Query($args);
                     $miembros = new WP_Query($args);
                     if ($miembros->have_posts()) {
                         $i = 0;
+                        $primero = true;
                         while ($miembros->have_posts()) {
                             $miembros->the_post();
 
@@ -408,10 +415,17 @@ $org_politicas = new WP_Query($args);
 
                             $i++;
                             if (1 == $i) {
+                                $primero_id = $member_id;
+                                $primero_nombre = get_the_title();
+                                $primero_classes = $classes;
+                                $primero_link = get_the_permalink();
+                                $primero_thumbnail = get_the_post_thumbnail_url();
+                                $primero_logo_partido = $partido_politico_logo;
+                                $primero_circunscripcion = $tipo_cir->post_title;
                     ?>
-                                <div class="row">
+                                <div class="row d-block d-sm-none">
                                     <div class="col-sm-12 col-md-2 offset-md-5 text-center">
-                                        <div class="member-container<?php foreach ($classes as $class) {
+                                        <div data-memberid="<?php echo $member_id; ?>" class="member-container<?php foreach ($classes as $class) {
                                                                         echo ' ' . $class;
                                                                     } ?>">
                                             <div class="member-thumbnail">
@@ -433,7 +447,7 @@ $org_politicas = new WP_Query($args);
                                                     </div>
                                                     <div class="member-feature-content-placeholder lh-0">
                                                         <h2 class="fs-18 bold"><?php echo get_the_title(); ?></h2>
-                                                        <p class="lh-1 fs-16">Concejal <?php echo $tipo_cir->post_title; ?></p>
+                                                        <p class="lh-1 fs-16">Presidente <?php echo $tipo_cir->post_title; ?></p>
                                                         <?php /*
                                                         <p><?php echo $partido_politico_object->post_title; ?></p>
                                                         */ ?>
@@ -487,7 +501,38 @@ $org_politicas = new WP_Query($args);
                         <?php
                                 // End Content
                                 if ($i == 3) {
-                                    echo '</div><div class="col-md-4"></div>';
+                                    if($primero == true){
+                                        $primero = false;
+                                        echo '</div><div class="col-md-4 text-center">';
+                        ?>
+                        <div data-memberid="<?php echo $primero_id; ?>" class="member-container first-member<?php foreach ($primero_classes as $class) {
+                                                                        echo ' ' . $class;
+                                                                    } ?>">
+                            <div class="member-thumbnail">
+                                <a href="<?php echo $primero_link; ?>">
+                                    <?php
+                                        echo '<img width="100" class="img-fluid rounded-circle" src="' . $primero_thumbnail . '" alt="' . $primero_nombre . '" title="' . $primero_nombre . '">';
+                                    ?>
+                                </a>
+                                <div class="member-features">
+                                    <div class="member-feature-img-placeholder">
+                                        <img class="img-fluid no-bkg" src="<?php echo $primero_logo_partido; ?>">
+                                    </div>
+                                    <div class="member-feature-content-placeholder lh-0">
+                                        <h2 class="fs-18 bold"><?php echo $primero_nombre; ?></h2>
+                                        <p class="lh-1 fs-16">Presidente <?php echo $primero_circunscripcion; ?></p>
+                                        <?php /*
+                                        <p><?php echo $partido_politico_object->post_title; ?></p>
+                                        */ ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                                        echo '</div>';
+                                    }else{
+                                        echo '</div><div class="col-md-4"></div>';
+                                    }
                                 } else {
                                     echo '</div>';
                                 }
@@ -530,10 +575,14 @@ $org_politicas = new WP_Query($args);
                     results++;
                 })
                 $('.member-container').addClass('deactivated');
+                $('.member-container').removeClass('activated');
+                $(selectors).removeClass('activated');
                 $(selectors).removeClass('deactivated');
             } else {
+                $('.member-container').removeClass('activated');
                 $('.member-container').removeClass('deactivated');
             }
+            $('.member-container:not(.deactivated)').addClass('activated');
             $('#results_amount').text($('.member-container:not(.deactivated)').length);
             $('#show_results').show();
 
@@ -545,6 +594,7 @@ $org_politicas = new WP_Query($args);
         $('#clear_filters').click(function() {
             $('#show_results').hide();
             $('.member-container').removeClass('deactivated');
+            $('.member-container').removeClass('activated');
         })
     })
 

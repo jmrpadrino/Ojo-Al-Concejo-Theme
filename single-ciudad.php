@@ -174,7 +174,7 @@ wp_reset_postdata();
             </div>
         </div>
         <div class="row mb-5 mt-5">
-            <div class="col-sm-12 col-md-6">
+            <div class="col-sm-12 col-md-6 mt-sm-3">
                 <div class="row  bg-ececec mb-2">
                     <div class="col-sm-9 p-1">
                         <span class="fs-26 data-box bold"><i class="fas fa-arrow-right"></i> <?php echo $miembros_varones; ?> de <?php echo count($miembros->posts); ?></span>
@@ -192,11 +192,11 @@ wp_reset_postdata();
                         <span class="fs-18">concejales representan a la ruralidad</span>
                     </div>
                     <div class="col-sm-3 d-flex justify-content-center align-items-center pt-3 pb-3" style="background: <?php echo $city_color; ?>;">
-                        <i class="fas fa-tree fs-60 text-white"></i>
+                        <i class="fas fa-tractor fs-60 text-white"></i>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-5 offset-md-1">
+            <div class="col-sm-12 col-md-5 offset-md-1 mt-sm-3">
                 <img class="img-fluid" src="<?php echo THEME_URL . '/img/Proximamente-Home.jpg'; ?>">
             </div>
         </div>
@@ -205,22 +205,23 @@ wp_reset_postdata();
 <div class="section-concejotransparente">
     <div class="container">
         <div class="row mb-5 mt-5">
-            <div class="col-sm-12 col-md-4">
+            <div class="col-sm-12 col-md-6 col-lg-4">
                 <h4 class="fs-28"><i class="fas fa-arrow-right"></i> Concejo <strong>Transparente</strong></h4>
                 <hr class="hr-white" />
                 <p class="fs-28 bold">¡Incide!</p>
                 <p class="mb-3">Pide a tus representantes en el Concejo Municipal que transparenten información sobre su gestión</p>
                 <a class="btn-concejo-transparente mt-3" href="<?php echo home_url('/ciudad/' . $post->post_name . '/consejo-municipal/'); ?>">Revisa si tu Concejal es <strong>transparente</strong></a>
             </div>
-            <div class="col-sm-12 col-md-6 offset-md-2">
+            <div class="col-sm-12 col-md-6 col-lg-4 offset-lg-3">
                 <?php 
                     $popup_image_url = get_post_meta(get_the_ID(), 'oda_ciudad_info_popup_image', true);
                     if (!empty($popup_image_url)){ 
                 ?>
-                <a class="text-white" href="#" data-toggle="modal" data-target="#modalinfo"><i class="fas fa-info-circle fs-26 ml-3"></i></a>
+                <a class="text-white" href="#" data-toggle="modal" data-target="#modalinfo"><i class="fas fa-info-circle fs-26"></i></a>
                 <div class="modal fade" id="modalinfo">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
+                        <div class="dismis-modals" data-dismiss="modal"><i class="far fa-times-circle text-blue-main"></i></div>
                             <div class="modal-body">
                                 <div class="col-sm-12 text-center">
                                     <img class="img-fluid" src="<?php echo $popup_image_url; ?>">
@@ -230,7 +231,7 @@ wp_reset_postdata();
                     </div>
                 </div>
                     <?php } // END if ?>
-                <p class="fs-28 ml-2"><i class="fas fa-arrow-right"></i> <span class="fs-60 bold"><?php echo $miembros_concejo_transparente; ?> de <?php echo count($miembros->posts); ?></span></p>
+                <p class="fs-28"><span class="fs-80 bold"><?php echo $miembros_concejo_transparente; ?> de <?php echo count($miembros->posts); ?></span></p>
                 <p>Miembros del Concejo que forman parte<br />del Concejo Transparente</p>
             </div>
         </div>
@@ -247,7 +248,7 @@ $carpetas = get_post_meta(get_the_ID(), 'oda_ciudad_carpeta', false);
             </div>
         </div>
         <div class="row mb-5 mt-5">
-            <div class="col-sm-12 col-md-10 offset-md-1">
+            <div class="col-sm-12 col-md-12 col-lg-10 offset-lg-1">
                 <div class="w-100 d-block d-sm-flex justify-content-around folder-list mt-5">
                     <?php
                     if ($carpetas) {
@@ -266,6 +267,7 @@ $carpetas = get_post_meta(get_the_ID(), 'oda_ciudad_carpeta', false);
                                 <div class="modal fade" id="modalcarpeta-<?php echo $index; ?>">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
+                                        <div class="dismis-modals" data-dismiss="modal"><i class="far fa-times-circle text-blue-main"></i></div>
                                             <div class="modal-body">
                                                 <div class="row">
                                                     <div class="col-sm-3">

@@ -1,10 +1,10 @@
 <footer>
-    <div class="container pb-5 pt-5">
+    <div class="container pb-5 pt-5 text-sm-center">
         <div class="row">
             <div class="col-md-4">
                 Una iniciativa de:&nbsp;&nbsp;&nbsp;<a href="https://www.ciudadaniaydesarrollo.org/"><img class="img-fluid" src="<?php echo THEME_URL . '/img/FCD-isotipo.png'; ?>" alt="Observatorio Logo"></a>
             </div>
-            <div class="col-md-4 text-center">
+            <div class="col-md-4 social-footer-container text-center">
                 <ul class="w-100 d-flex justify-content-around list-no-style footer-social-icons">
                     <li><a href="https://www.facebook.com/ciudadaniaydesarrollo/"><i class="fab fa-facebook-f"></i></a></li>
                     <li><a href="https://twitter.com/FCD_Ecuador"><i class="fab fa-twitter"></i></a></li>
@@ -12,7 +12,7 @@
                     <li><a href="https://www.youtube.com/channel/UCCC9Bs3muMobtp46Mo3n-Ew"><i class="fab fa-youtube"></i></a></li>
                 </ul>
             </div>
-            <div class="col-md-4 text-right">
+            <div class="col-md-4 text-right text-sm-center">
                 Con el apoyo de:&nbsp;&nbsp;&nbsp;<a href="https://www.ned.org/"><img src="<?php echo THEME_URL . '/img/NED-logo.png'; ?>" alt="NED"></a>
             </div>
         </div>
@@ -24,7 +24,10 @@
     <?php wp_footer(); ?>
     <script>
         $(document).ready(function(){
-
+            $('#expand-menu, .close-mobile-nav').click(function(){
+                $('body').toggleClass('mobile-shown');
+                $('.floating-nav').toggleClass('expanded');
+            })
             $("#fixed-nav").sticky({
                 topSpacing:0
             }).on('sticky-end', function() { 

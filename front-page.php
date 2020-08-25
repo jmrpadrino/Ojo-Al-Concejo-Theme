@@ -14,6 +14,7 @@
         perspective: 1000px;
         /* Remove this if you don't want the 3D effect */
         margin: 0 auto;
+        position: relative;
     }
     .flip-card .rounded-circle {
         box-shadow: 5px 6px 13px rgba(0,0,0,.2);
@@ -59,6 +60,18 @@
         justify-content: center;
         align-items: center;
     }
+    .organic-front-page{
+        position: absolute;
+        left: -75px;
+        width: 80%;
+        top: -134px;
+    }
+    .organic-front-page img{ width: 200%; }
+    .flip-card.odd-element .organic-front-page{
+        transform: rotate(180deg);
+        left: 126px;
+        top: 167px;
+    }
 </style>
 <div class="container hero-text">
     <div class="row">
@@ -71,6 +84,7 @@
     <div class="container pt-3 pb-3">
         <div class="row pt-3 pb-3">
             <?php
+            $i = 0;
             $args = array(
                 'post_type' => 'ciudad',
                 'posts_per_page' => -1,
@@ -86,7 +100,10 @@
             ?>
             <div class="col-md-4 text-center">
                 <a class="text-black-light" href="<?php echo $link; ?>">
-                    <div class="flip-card">
+                    <div class="flip-card<?php echo ($i % 2 != 0) ? ' odd-element': ''; ?>">
+                        <div class="organic-front-page">
+                            <img src="<?php echo THEME_URL . '/img/textura-logo.png'; ?>">
+                        </div>
                         <div class="flip-card-inner front-city-circle-container1">
                             <div class="flip-card-front">
                                 <?php if ( has_post_thumbnail() ){ ?>
@@ -103,6 +120,7 @@
                 </a>
             </div>
             <?php
+                $i++;
                 }
             }
             ?>

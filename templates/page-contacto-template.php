@@ -3,8 +3,9 @@ get_header();
 $contacto = get_page_by_path('contactanos');
 ?>
 <style>
-    .btn-secondary {
+    .btn-secondary.contact-btn {
         border-radius: 25px;
+        background-color: #4A4F55;
     }
     .address-box {
         padding-top: 50px!important;
@@ -46,7 +47,7 @@ $contacto = get_page_by_path('contactanos');
                     <input type="email" class="form-control mb-1 bg-ececec" name="email" placeholder="E-mail" required>
                     <input type="text" class="form-control mb-1 bg-ececec" name="asunto" placeholder="Asunto" required>
                     <textarea class="form-control mb-1 bg-ececec" name="mensaje" id="" rows="2" placeholder="Mensaje"></textarea>
-                    <button class="btn btn-secondary" name="contact_send" type="submit">Enviar</button>
+                    <button class="btn btn-secondary contact-btn" name="contact_send" type="submit">Enviar</button>
                 </form>
 
             </div>
@@ -56,7 +57,7 @@ $contacto = get_page_by_path('contactanos');
                     <p><strong>Teléfonos:</strong> (507) 2234120/22/24</p>
                     <p><strong>Correo:</strong> info@ciudadaniaydesarrollo.org</p>
                 </div>
-                <a href="#" class="btn btn-secondary">¿Eres miembro del Concejo?</a>
+                <a href="#" class="btn btn-secondary contact-btn">¿Eres miembro del Concejo?</a>
             </div>
         </div>
     </div>

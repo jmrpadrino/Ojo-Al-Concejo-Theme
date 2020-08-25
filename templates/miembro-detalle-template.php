@@ -4,6 +4,7 @@ the_post(); ?>
 global $wp_query;
 $the_member = get_page_by_path($wp_query->query_vars['member_name'], OBJECT, 'miembro');
 $the_member_city = get_post_meta($the_member->ID, 'oda_ciudad_owner', true);
+$curul = get_post_meta($the_member->ID, 'oda_miembro_curul', true);
 $plan = get_post_meta($the_member->ID, 'oda_miembro_pdf_plan', true);
 $link_radiografia = get_post_meta($the_member->ID, 'oda_miembro_rpurl', true);
 $circunscripcion = get_post(
@@ -111,19 +112,19 @@ $comisiones_ordenadas = array_reverse($comisiones);
     </div>
     -->
     <div class="row pt-3 pb-3">
-        <div class="col-md-3 bg-ececec pt-3">
+        <div class="col-md-3 bg-ececec pt-3 mb-3">
             <div class="row">
                 <div class="col-sm-12">
                     <h3 class="text-center fs-18 bold">Organización Política</h3>
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-4 col-sm-4">
                             <?php
                             if (!empty($partido_politico_logo)) {
                                 echo '<img class="img-fluid" src="' . $partido_politico_logo . '" alt="">';
                             }
                             ?>
                         </div>
-                        <div class="col-sm-8">
+                        <div class="col-8 col-sm-8">
                             <h4 class="fs-16 mt-2"><?php echo $partido_politico_object->post_title; ?></h4>
                         </div>
                     </div>
@@ -134,7 +135,7 @@ $comisiones_ordenadas = array_reverse($comisiones);
                 <div class="col-sm-12 text-center">
                     <h3 class=" text-center fs-18 bold">Plan de trabajo del partido</h3>
                     <div class="row">
-                        <div class="col-sm-3 offset-sm-3 text-center pt-1">
+                        <div class="col-3 offset-3 col-sm-3 offset-sm-3 text-center pt-1">
                             <?php
                             if (!empty($plan)) {
                                 echo '<a class="ta-c mt-2 text-black-light" href="' . $plan . '" target="_blank"><i class="far fa-file-alt fs-36"></i></a>';
@@ -144,6 +145,7 @@ $comisiones_ordenadas = array_reverse($comisiones);
                             <div class="modal fade" id="reques_program">
                                 <div class="modal-dialog modal-sm">
                                     <div class="modal-content">
+                                        <div class="dismis-modals" data-dismiss="modal"><i class="far fa-times-circle text-blue-main"></i></div>
                                         <div class="modal-body">
                                             <div class="d-flex h-100 flex-column justify-content-center align-items-center">
                                             <a href="https://twitter.com/intent/tweet?text=<?php echo get_post_meta(get_post_meta($the_member->ID,'oda_ciudad_owner', true),'oda_ciudad_tweet_folders', true) . ' - ' . get_post_meta($the_member->ID,'oda_miembro_twitter', true); ?>" style="text-decoration: none;">
@@ -161,7 +163,7 @@ $comisiones_ordenadas = array_reverse($comisiones);
                             }
                             ?>
                         </div>
-                        <div class="col-sm-3 text-center">
+                        <div class="col-3 col-sm-3 text-center">
                             <p class="lh-0 mt-3"><?php echo date('Y', strtotime(PERIOD_BEGINS)); ?></p>
                             <p class="lh-0"><?php echo date('Y', strtotime(PERIOD_BEGINS)) + 4; ?></p>
                         </div>
@@ -195,9 +197,9 @@ $comisiones_ordenadas = array_reverse($comisiones);
                 </div>
             </div>
         </div>
-        <div class="col-md-6 text-center">
+        <div class="col-md-6 text-center mb-3">
             <h1 class="fs-36"><?php echo get_post_meta($the_member->ID, 'oda_miembro_nombres', true);//$the_member->post_title; ?><br /><strong><?php echo get_post_meta($the_member->ID, 'oda_miembro_apellidos', true); ?></strong></h1>
-            <p class="mb-1">Concejal <span class="bold"><?php echo $circunscripcion->post_title; ?></span></p>
+            <p class="mb-1"><?php echo ($curul == 1) ? 'Alcalde' : 'Concejal'; ?> <span class="bold"><?php echo $circunscripcion->post_title; ?></span></p>
             <?php
             if (!empty($thumbnail_url)) {
                 echo '<div class="single_miembro_thumbnail">';
@@ -225,7 +227,7 @@ $comisiones_ordenadas = array_reverse($comisiones);
             <?php } ?>
             <div class="row">
                 <div class="col-sm-12 text-center">
-                <a href="https://twitter.com/intent/tweet?text=<?php echo get_post_meta(get_post_meta($the_member->ID,'oda_ciudad_owner', true),'oda_ciudad_tweet_folders', true) . ' - ' . get_post_meta($the_member->ID,'oda_miembro_twitter', true); ?>" style="text-decoration: none;">
+                    <a href="https://twitter.com/intent/tweet?text=<?php echo get_post_meta(get_post_meta($the_member->ID,'oda_ciudad_owner', true),'oda_ciudad_tweet_folders', true) . ' - ' . get_post_meta($the_member->ID,'oda_miembro_twitter', true); ?>" style="text-decoration: none;">
                         <span class="twitter-circle-icon"><i class="fab fa-twitter text-white fs-20"></i></span>
                     </a>
                     <p class="mt-1"><strong>Mándale un tweet</strong><br />y pídele que sea parte de Concejo Transparente</p>
