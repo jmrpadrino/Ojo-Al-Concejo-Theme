@@ -51,11 +51,6 @@ wp_reset_postdata();
         padding-top: 10px;
         padding-bottom: 10px;
     }
-    #modalinfo .modal-content{
-        background-color:transparent!important;
-        border-radius: 0;
-        border: 0;
-    }
     #modalinfo .modal-body{ padding: 0; }
     .btn-concejo-transparente,
     .data-box {
