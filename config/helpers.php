@@ -201,6 +201,22 @@ function get_observaciones_ciudad($city_id = ''){
     return new WP_Query($args);
 }
 
+// Observaciones por miembro
+function get_observaciones_miembro($miembro_id = ''){
+    $args = array(
+        'post_type' => 'observacion',
+        'posts_per_page' => -1,
+        'meta_query' => array(
+            array(
+                'key' => 'oda_observacion_miembro',
+                'value' => $miembro_id,
+                'compare' => '=',
+            )
+        )
+    );
+    return new WP_Query($args);
+}
+
 // Resoluciones por ciudad
 function get_resoluciones_ciudad($city_id = ''){
     $args = array(
@@ -402,11 +418,13 @@ function estadisticas_del_miembro($miembro_id = ''){
 
 // Documentos ordenanzas y resoluciones del miembro
 function documentos_del_miembro($miembro_id= ''){
-    $ord = $res = 0;
+    $ord = $res = $obs = $sol_info = 0;
     $documentos = array();
     $ciudad_miembro = get_post_meta($miembro_id, 'oda_ciudad_owner', true);
     $ordenanzas = get_ordenanzas_ciudad($ciudad_miembro);
     $resoluciones = get_resoluciones_ciudad($ciudad_miembro);
+    $observaciones = get_observaciones_miembro($miembro_id);
+    $solicitudes_info = get_solicitudes_informacion($ciudad_miembro);
     foreach ($ordenanzas->posts as $ordenanza) {
         $lista_miembros = array();
         $lista_miembros = get_post_meta($ordenanza->ID, 'oda_ordenanza_miembros', true);
@@ -425,9 +443,22 @@ function documentos_del_miembro($miembro_id= ''){
             }
         }
     }
+    foreach ($solicitudes_info->posts as $solicitud_info) {
+        $lista_miembros = array();
+        $lista_miembros = get_post_meta($solicitud_info->ID, 'oda_solicitud_info_miembros', true);
+        if($lista_miembros){
+            if(in_array($miembro_id,$lista_miembros)){
+                $sol_info++;
+            }
+        }
+    }
+    
+    $obs = $observaciones->post_count;
     $documentos = array(
         'ordenanzas' => $ord,
-        'resoluciones' => $res
+        'resoluciones' => $res,
+        'observaciones' => $obs,
+        'solicitudes' => $sol_info
     );
     return $documentos;
 }

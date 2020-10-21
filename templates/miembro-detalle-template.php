@@ -341,7 +341,7 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                             <div class="col-sm-5 offset-md-1">
                                                 <div class="stat-item-placeholder">
                                                     <div class="stat-item-number">
-                                                        <span><?php echo ($docs['ordenanzas']); ?></span>
+                                                        <span><?php echo ($docs['observaciones']); ?></span>
                                                     </div>
                                                     <div class="stat-item-element"></div>
                                                 </div>
@@ -350,7 +350,7 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                             <div class="col-sm-5">
                                                 <div class="stat-item-placeholder">
                                                     <div class="stat-item-number">
-                                                        <span><?php echo ($docs['resoluciones']); ?></span>
+                                                        <span><?php echo ($docs['solicitudes']); ?></span>
                                                     </div>
                                                     <div class="stat-item-element"></div>
                                                 </div>
