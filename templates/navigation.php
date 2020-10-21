@@ -8,6 +8,8 @@
     $show_socials = true;
     $current_city = '';
     $current_view = '';
+    $oculta_transparente = $oculta_ordenanza = $oculta_resolucion = $oculta_observacion = $oculta_solinfo = $oculta_soltransp = '';
+
     if (
         !is_front_page() ||
         is_page() ||
@@ -54,6 +56,13 @@
         $show_socials = false;
         $current_view = 'front-page';
     }    
+
+    $oculta_transparente    = get_post_meta($current_city, 'oda_ciudad__concejo_transver', true);
+    $oculta_ordenanza       = get_post_meta($current_city, 'oda_ciudad_ocula_ordenanza', true);
+    $oculta_resolucion      = get_post_meta($current_city, 'oda_ciudad_ocula_resoluciones', true);
+    $oculta_observacion     = get_post_meta($current_city, 'oda_ciudad_ocula_observaciones', true);
+    $oculta_solinfo         = get_post_meta($current_city, 'oda_ciudad_ocula_solicitud_info', true);
+    $oculta_soltransp       = get_post_meta($current_city, 'oda_ciudad_ocula_solicitud_comp', true);
 ?>
 <style scoped>
     .main-nav {
@@ -78,6 +87,48 @@
     .folder-list a.folder-icon:hover:before{ 
         background-color: <?php echo $background_default_color; ?>;
     }
+    .sub-menu {
+        top: calc(100% - 1px);
+        left: 0;
+        z-index: 9999;
+        width: 100%;
+        background: #fff;
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+    }
+    .sub-menu li {
+        position: relative;
+        display: block;
+    }
+    .item-has-children:hover {
+        visibility: inherit;
+    }
+    .item-has-children:hover .sub-menu {
+        visibility: visible;
+        opacity: 1;
+    }
+    .is-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    .sub-menu-side {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        width: 100%;
+        top:0;
+        left: 250px;
+        padding: 0;
+    }
+    .is-dropdown:hover .sub-menu-side {display: block;}
 </style>
 <div id="fixed-nav">
     <div class="pre-nav <?php echo $current_view;?>">
@@ -89,7 +140,7 @@
                         <li><a <?php echo $link_class; ?> href="<?php echo home_url('/')?>">Inicio</a></li>
                         <?php } ?>
                         <li><a <?php echo $link_class; ?> href="<?php echo (!empty($current_city)) ? home_url('/ciudad/'.$ciudad.'/contactanos/') : home_url('contactanos'); ?>">Contáctanos</a></li>
-                        <li><a <?php echo $link_class; ?> href="<?php echo (!empty($current_city)) ? home_url('/ciudad/'.$ciudad.'/sobre-nosotros/') : home_url('sobre-nosotros'); ?> ">Sobre Nosotros</a></li>
+                        <li><a <?php echo $link_class; ?> href="<?php echo (!empty($current_city)) ? home_url('/ciudad/'.$ciudad.'/sobre-nosotros/') : home_url('sobre-nosotros'); ?> ">Sobre nosotros</a></li>
                         <?php if($show_socials){ ?>
                         <?php if (!empty($facebook)){ ?>
                         <li><a href="<?php echo $facebook; ?>"><i class="fab fa-facebook-f"></i></a></li>
@@ -112,6 +163,10 @@
                 <div class="col-6 col-md-6">
                     <?php if(!empty($city_logo)){ ?>
                     <img class="img-fluid city-logo" width="200" src="<?php echo $city_logo; ?>">
+                    <?php }else{ ?>
+                    <a href="<?php echo home_url(); ?>">
+                        <img class="img-fluid nocity-logo" width="200" src="<?php echo THEME_URL . '/img/Ojo-al-Concejo-nocity.png'; ?>">
+                    </a>
                     <?php } ?>
                 </div>
                 <div class="col-6 col-md-6 hidden-sm text-right">
@@ -136,9 +191,45 @@
             <span class="close-mobile-nav d-block d-sm-none ta-r fs-32"><i class="far fa-times-circle"></i></span>
             <nav>
                 <ul class="w-100 d-block d-sm-flex justify-content-start list-no-style mb-0 mt-3 custom-nav">
-                    <li><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/'); ?>">Inicio</a></li>
-                    <li><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/consejo-municipal/'); ?>">Concejo Municipal</a></li>
-                    <li><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/evaluacion-de-gestion/'); ?>">Evaluación de gestión</a></li>
+                    <li class="menu-item"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/'); ?>">Inicio</a></li>
+                    <li class="menu-item item-has-children"><a class="text-white" href="#">Concejo Municipal</a>
+                        <ul class="sub-menu">
+                            <li class="ta-l b-gray pl-2">
+                                <a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/consejo-municipal/'); ?>">¿Quiénes lo integran?</a>
+                            </li>
+                            <li class="ta-l b-gray pl-2 is-dropdown">
+                                <!--
+                                <a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/que-ha-hecho-el-consejo-municipal/'); ?>">¿Qué hace?</a>
+                                -->
+                                <a class="text-white" href="#">¿Qué hace?</a>
+                                <ul class="sub-menu-side">
+                                    <?php if (empty($oculta_ordenanza)){ ?>
+                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/proyectos-de-ordenanza/'); ?>">Proyectos de ordenanza</a></li>
+                                    <?php } ?>
+                                    <?php if (empty($oculta_resolucion)){ ?>
+                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/proyectos-de-resolucion/'); ?>">Proyectos de resolución</a></li>
+                                    <?php } ?>
+                                    <?php if (empty($oculta_observacion)){ ?>
+                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/observaciones-a-proyectos-de-ordenanza/'); ?>">Observaciones a Proyectos de ordenanza</a></li>
+                                    <?php } ?>
+                                    <?php if (empty($oculta_solinfo)){ ?>
+                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/solicitudes-de-informacion/'); ?>">Solocitudes de información</a></li>
+                                    <?php } ?>
+                                    <?php if (empty($oculta_soltransp)){ ?>
+                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/solicitudes-de-comparecencia/'); ?>">Solocitudes de comparecencia</a></li>
+                                    <?php } ?>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item item-has-children">
+                        <a class="text-white" href="#">Evaluación de gestión</a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/tu-concejo-en-cifras/'); ?>">Tu Concejo en cifras</a>
+                            </li>
+                        </ul>
+                    </li>
                 <?php
                     if (isset($otras_ciudades)){
                         if ($otras_ciudades->have_posts()){

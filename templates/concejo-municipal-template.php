@@ -5,135 +5,17 @@ $ciudad = $wp_query->query_vars['city_slug'];
 $item = get_page_by_path($ciudad, OBJECT, 'ciudad');
 $city_primary_color = get_post_meta($item->ID, 'oda_ciudad_color', true);
 
-// Circunscripciones
-$args = array(
-    'post_type' => 'circunscripcion',
-    'posts_per_page' => -1,
-    'meta_query' => array(
-        array(
-            'key' => 'oda_ciudad_owner',
-            'value' => $item->ID,
-            'compare' => '=',
-        )
-    )
-);
-$circunscripciones = new WP_Query($args);
+$circunscripciones = get_circunscripciones_ciudad($item->ID);
+$comisiones = get_comisiones_ciudad($item->ID);
+$org_politicas = get_organizaciones_politicas();
 
-// Circunscripciones
-$args = array(
-    'post_type' => 'comision',
-    'posts_per_page' => -1,
-    'meta_query' => array(
-        array(
-            'key' => 'oda_ciudad_owner',
-            'value' => $item->ID,
-            'compare' => '=',
-        )
-    )
-);
-$comisiones = new WP_Query($args);
-
-// Organizaciones políticas
-$args = array(
-    'post_type' => 'partido',
-    'posts_per_page' => -1,
-);
-$org_politicas = new WP_Query($args);
 ?>
 <style>
-    .member-features {
-        position: absolute;
-        min-width: 300px;
-        background: white;
-        z-index: 99999;
-        top: 0;
-        left: 150px;
-        box-shadow: 7px 6px 9px #00000026;
-        display: none;
-        max-height: 77px;
-    }
-
-    .member-container.right-box .member-features {
-        right: 120px;
-        left: auto;
-    }
-    .member-container.first-member .member-features{
-        top: -90px;
-        left: -44px;
-    }
-
-    .member-feature-img-placeholder {
-        width: 100px;
-    }
-
-    .member-feature-content-placeholder {
-        padding: 10px;
-        width: 100%;
-    }
-
-    .member-feature-content-placeholder h2 {
-        font-size: 20px;
-    }
-    .member-container { transition: transform ease-in .2s; }
-    .member-container:not(.deactivated):hover .member-features {
-        display: flex;
-    }
-    .member-container.activated { transform: scale(1.1); transition: transform ease-in .2s; }
-
     .info-sign-filters {
         color: <?php echo $city_primary_color; ?>;
     }
-
-    #expand_text {
-        cursor: pointer;
-    }
-
-    #clear_filters {
-        border: none;
-        background: transparent;
-    }
-
-    #show_results {
-        padding: 3px 8px;
-        border: 1px solid gray;
-        background: lightgray;
-    }
-
-    .filter-box-content {
-        background: #F5F5F5;
-    }
-
-    .filter-box-header,
-    .filter-box-footer {
-        background: #D9D9D9;
-        padding-top: 3px;
-        padding-bottom: 3px;
-    }
-
-    .filter-box-content .card {
-        border: 0;
-        background: transparent;
-        margin-bottom: 15px;
-    }
-
-    .filter-box-content .btn-link {
-        width: 100%;
-        color: #222222;
-    }
-
-    .filter-box-content .card-header {
-        padding: 0;
-    }
-
-    .filter-box-content .card-header:first-child {
-        border-radius: 25px;
-    }
-
-    .filter-box-content .form-check {
-        border-bottom: 1px solid #d0d0d0;
-    }
 </style>
-<div class="container">
+<div class="container main-container">
     <div class="row pt-3 pb-3">
         <div class="col-sm-12 pt-3 pb-3">
             <?php echo get_post_meta($item->ID, 'oda_ciudad_intro_concejo', true); ?>
@@ -152,7 +34,7 @@ $org_politicas = new WP_Query($args);
                 </div>
             </div>
             <div class="modal fade" id="howtofilters">
-                <div class="modal-dialog modal-md">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="dismis-modals" data-dismiss="modal"><i class="far fa-times-circle text-blue-main"></i></div>
                         <div class="modal-body">
@@ -197,6 +79,7 @@ $org_politicas = new WP_Query($args);
                                                     </div>
                                                 <?php } // END While 
                                                 ?>
+                                                <p class="ta-r bold"><span class="clean-radio" data-radio="circunscripcion">Desactivar filtro</span></p>
                                             </div>
                                         </div>
                                     </div>
@@ -217,7 +100,7 @@ $org_politicas = new WP_Query($args);
                                     </div>
 
                                     <div id="generoc" class="collapse" aria-labelledby="generoh" data-parent="#genero">
-                                        <div class="card-body">
+                                        <div class="card-body">                                            
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="genero" id="genero_1" value="genero-1">
                                                 <label class="form-check-label" for="genero_1">
@@ -230,12 +113,7 @@ $org_politicas = new WP_Query($args);
                                                     Femenino
                                                 </label>
                                             </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="genero" id="genero_3" value="genero-3">
-                                                <label class="form-check-label" for="genero_3">
-                                                    Sin especificar
-                                                </label>
-                                            </div>
+                                            <p class="ta-r bold"><span class="clean-radio" data-radio="genero">Desactivar filtro</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -255,7 +133,7 @@ $org_politicas = new WP_Query($args);
                                         </div>
 
                                         <div id="organizacionc" class="collapse" aria-labelledby="organizacionh" data-parent="#organizacion">
-                                            <div class="card-body">
+                                            <div class="card-body">                                                    
                                                 <?php while ($org_politicas->have_posts()) {
                                                     $org_politicas->the_post(); ?>
                                                     <div class="form-check">
@@ -266,6 +144,7 @@ $org_politicas = new WP_Query($args);
                                                     </div>
                                                 <?php } // End While org politicas 
                                                 ?>
+                                                <p class="ta-r bold"><span class="clean-radio" data-radio="organizacion">Desactivar filtro</span></p>
                                             </div>
                                         </div>
                                     </div>
@@ -297,6 +176,7 @@ $org_politicas = new WP_Query($args);
                                                 </div>
                                             <?php } // End While org politicas 
                                             ?>
+                                            <p class="ta-r bold"><span class="clean-radio" data-radio="comision">Desactivar filtro</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -369,7 +249,7 @@ $org_politicas = new WP_Query($args);
                             $partido_politico_logo = get_the_post_thumbnail_url($org_politica);
 
                             // Filters
-                            $classes[] = 'org-' . $org_politica;
+                            $classes[] = 'organizacion-' . $org_politica;
                             $classes[] = 'circunscripcion-' . $circunscripcion;
                             $classes[] = 'genero-' . $genero;
 
@@ -395,17 +275,17 @@ $org_politicas = new WP_Query($args);
                                     $demas = get_post_meta(get_the_ID(), 'oda_comision_composicion_miembros', true);
                                     //echo $member_id . ' - ' . $presidente . ' - ' .get_the_ID() .'<br />';
                                     if ($presidente == $member_id) {
-                                        $classes[] = 'com-' . get_the_ID();
+                                        $classes[] = 'comision-' . get_the_ID();
                                         continue;
                                     }
                                     if ($videpresidente == $member_id) {
-                                        $classes[] = 'com-' . get_the_ID();
+                                        $classes[] = 'comision-' . get_the_ID();
                                         continue;
                                     }
                                     if ($demas) {
                                         foreach ($demas as $otro) {
                                             if ($otro == $member_id) {
-                                                $classes[] = 'com-' . get_the_ID();
+                                                $classes[] = 'comision-' . get_the_ID();
                                             }
                                         }
                                     }
@@ -441,17 +321,17 @@ $org_politicas = new WP_Query($args);
                                                     }
                                                     ?>
                                                 </a>
-                                                <div class="member-features">
-                                                    <div class="member-feature-img-placeholder">
-                                                        <img class="img-fluid no-bkg" src="<?php echo $partido_politico_logo; ?>">
-                                                    </div>
-                                                    <div class="member-feature-content-placeholder lh-0">
-                                                        <h2 class="fs-18 bold"><?php echo get_the_title(); ?></h2>
-                                                        <p class="lh-1 fs-16">Presidente <?php echo $tipo_cir->post_title; ?></p>
-                                                        <?php /*
-                                                        <p><?php echo $partido_politico_object->post_title; ?></p>
-                                                        */ ?>
-                                                    </div>
+                                            </div>
+                                            <div class="member-features">
+                                                <div class="member-feature-img-placeholder">
+                                                    <img class="img-fluid no-bkg" src="<?php echo $partido_politico_logo; ?>">
+                                                </div>
+                                                <div class="member-feature-content-placeholder lh-0">
+                                                    <h2 class="fs-18 bold"><?php echo get_the_title(); ?></h2>
+                                                    <p class="lh-1 fs-16">Alcalde <?php //echo $tipo_cir->post_title; ?></p>
+                                                    <?php /*
+                                                    <p><?php echo $partido_politico_object->post_title; ?></p>
+                                                    */ ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -484,17 +364,17 @@ $org_politicas = new WP_Query($args);
                                                 }
                                                 ?>
                                             </a>
-                                            <div class="member-features">
-                                                <div class="member-feature-img-placeholder">
-                                                    <img class="img-fluid no-bkg" src="<?php echo $partido_politico_logo; ?>">
-                                                </div>
-                                                <div class="member-feature-content-placeholder text-center lh-0">
-                                                    <h2 class="fs-18 bold"><?php echo get_the_title(); ?></h2>
-                                                    <p class="lh-1 fs-16">Concejal <?php echo $tipo_cir->post_title; ?></p>
-                                                    <?php /*
-                                                    <p><?php echo $partido_politico_object->post_title; ?></p>
-                                                    */ ?>
-                                                </div>
+                                        </div>
+                                        <div class="member-features">
+                                            <div class="member-feature-img-placeholder">
+                                                <img class="img-fluid no-bkg" src="<?php echo $partido_politico_logo; ?>">
+                                            </div>
+                                            <div class="member-feature-content-placeholder text-center lh-0">
+                                                <h2 class="fs-18 bold"><?php echo get_the_title(); ?></h2>
+                                                <p class="lh-1 fs-16">Concejal <?php echo $tipo_cir->post_title; ?></p>
+                                                <?php /*
+                                                <p><?php echo $partido_politico_object->post_title; ?></p>
+                                                */ ?>
                                             </div>
                                         </div>
                                     </div>
@@ -520,7 +400,7 @@ $org_politicas = new WP_Query($args);
                                     </div>
                                     <div class="member-feature-content-placeholder lh-0">
                                         <h2 class="fs-18 bold"><?php echo $primero_nombre; ?></h2>
-                                        <p class="lh-1 fs-16">Presidente <?php echo $primero_circunscripcion; ?></p>
+                                        <p class="lh-1 fs-16">Alcalde <?php //echo $primero_circunscripcion; ?></p>
                                         <?php /*
                                         <p><?php echo $partido_politico_object->post_title; ?></p>
                                         */ ?>
@@ -554,6 +434,7 @@ $org_politicas = new WP_Query($args);
 <script>
     $(document).ready(function() {
         $('#city_filters').change(function(e) {
+            console.log($('form').serialize());
             var results = 0;
             var fields = [];
             var classes = [];
@@ -561,7 +442,7 @@ $org_politicas = new WP_Query($args);
             var selectors = '';
             var selectorQuery = '';
             fields = $(this).serialize().split('&');
-            console.log(fields[0]);
+            //console.log(fields[0]);
             if (fields[0].length > 0) {
                 $.each(fields, function(index, value) {
                     indice[index] = value.split('=');
@@ -578,11 +459,11 @@ $org_politicas = new WP_Query($args);
                 $('.member-container').removeClass('activated');
                 $(selectors).removeClass('activated');
                 $(selectors).removeClass('deactivated');
+                $('.member-container:not(.deactivated)').addClass('activated');
             } else {
                 $('.member-container').removeClass('activated');
                 $('.member-container').removeClass('deactivated');
             }
-            $('.member-container:not(.deactivated)').addClass('activated');
             $('#results_amount').text($('.member-container:not(.deactivated)').length);
             $('#show_results').show();
 
@@ -595,6 +476,11 @@ $org_politicas = new WP_Query($args);
             $('#show_results').hide();
             $('.member-container').removeClass('deactivated');
             $('.member-container').removeClass('activated');
+        })
+        $('.clean-radio').click(function(){
+            target = $(this).data('radio');
+            $('input[name="'+target+'"]').prop('checked', false);
+            $('#city_filters').change();
         })
     })
 

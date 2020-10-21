@@ -19,4 +19,5 @@ function ecopre($array, $die = false){
         die;
     }
 }
+require_once('config/helpers.php');
 require_once('config/config.php');

@@ -12,7 +12,7 @@ function oda_load_frontend_scripts($hook) {
     //$my_css_ver = date("ymd-Gis", filemtime( get_template_directory_uri() . '/css/oda-styles.css' ));
      
     // 
-    wp_enqueue_script( THEME_PREFIX . 'custom_js', THEME_URL . '/js/oda-custom.js', array(), $my_js_ver );
+    wp_enqueue_script( THEME_PREFIX . 'custom_js', THEME_URL . '/js/oda-custom.js', array('jquery'), $my_js_ver, true );
     wp_register_style( THEME_PREFIX . 'styles', THEME_URL . '/css/oda-styles.css', false,   $my_css_ver );
     wp_enqueue_style ( THEME_PREFIX . 'styles' );
  
@@ -50,7 +50,6 @@ function oda_redirect_template($template) {
     if ( 'evaluacion-de-gestion' == $wp_query->query_vars['oda_template'] ) {
         $template = THEME_DIR . '/templates/evaluacion-de-gestion-template.php';
     }
-    
     if ( 'miembro' == $wp_query->query_vars['oda_template'] ) {
         $template = THEME_DIR . '/templates/miembro-detalle-template.php';
     }
@@ -60,8 +59,24 @@ function oda_redirect_template($template) {
     if ( 'sobre-nosotros' == $wp_query->query_vars['oda_template'] ) {
         $template = THEME_DIR . '/templates/page-sobre-nosotros-template.php';
     }
-    
-    
+    if ( 'proyectos-de-ordenanza' == $wp_query->query_vars['oda_template'] ) {
+        $template = THEME_DIR . '/templates/proyectos-de-ordenanza-template.php';
+    }
+    if ( 'proyectos-de-resolucion' == $wp_query->query_vars['oda_template'] ) {
+        $template = THEME_DIR . '/templates/proyectos-de-resolucion-template.php';
+    }
+    if ( 'observaciones-a-proyectos-de-ordenanza' == $wp_query->query_vars['oda_template'] ) {
+        $template = THEME_DIR . '/templates/observaciones-a-proyectos-de-ordenanza-template.php';
+    }
+    if ( 'solicitudes-de-informacion' == $wp_query->query_vars['oda_template'] ) {
+        $template = THEME_DIR . '/templates/solicitudes-de-informacion-template.php';
+    }
+    if ( 'solicitudes-de-comparecencia' == $wp_query->query_vars['oda_template'] ) {
+        $template = THEME_DIR . '/templates/solicitudes-de-comparecencia-template.php';
+    }
+    if ( 'tu-concejo-en-cifras' == $wp_query->query_vars['oda_template'] ) {
+        $template = THEME_DIR . '/templates/tu-concejo-en-cifras-template.php';
+    }
     return $template;
 }
 /*

@@ -17,6 +17,7 @@ footer { background: #ECECEC; }
     justify-content: center;
     align-items: center;
 }
+.main-container { *padding-top: 220px; }
 /* Texts and fonts */
 .uppercase { text-transform: uppercase; }
 .capitalize { text-transform: capitalize; }
@@ -171,15 +172,20 @@ footer { background: #ECECEC; }
 /* Cursors */
 .cursor-pointer { cursor: pointer; }
 /* Modals */
+
 .modal-content { 
     border: 0;
     border-radius: 20px;
     position: relative;
+    background-image: url(../img/bkg-bottom-modals.png);
+    background-size: contain;
+    background-position: bottom;
+    background-repeat: no-repeat;
 }
 .dismis-modals { 
     position: absolute;
-    top: -20px;
-    right: -30px;
+    top: 10px;
+    right: 10px;
     width: 31px;
     height: 31px;
     background: white;
@@ -188,6 +194,9 @@ footer { background: #ECECEC; }
     align-items: center;
     border-radius: 50%;
     box-shadow: 1px 2px 5px black;
+    font-size: 36px;
+    z-index: 999;
+
 }
 .modal-dialog {
     min-height: calc(100vh - 60px);
@@ -214,6 +223,92 @@ footer { background: #ECECEC; }
     color: #3B3B3B;
 }
 .footer-social-icons a:hover { text-decoration: none; }
+/* Filtros */
+.member-features {
+    position: absolute;
+    min-width: 300px;
+    background: white;
+    z-index: 99999;
+    top: 0;
+    left: 150px;
+    box-shadow: 7px 6px 9px #00000026;
+    display: none;
+    max-height: 77px;
+}
+.member-container.right-box .member-features {
+    right: 120px;
+    left: auto;
+}
+.member-container.first-member .member-features{
+    top: -90px;
+    left: -44px;
+}
+.member-feature-img-placeholder {
+    width: 100px;
+}
+.member-feature-content-placeholder {
+    padding: 10px;
+    width: 100%;
+}
+.member-feature-content-placeholder h2 {
+    font-size: 20px;
+}
+.member-container img{ transition: transform ease-in .2s; }
+.member-container:not(.deactivated):hover .member-features {
+    display: flex;
+}
+.member-container.activated img { transform: scale(1.1); transition: transform ease-in .2s; }
+
+#expand_text {
+    cursor: pointer;
+}
+
+#clear_filters {
+    border: none;
+    background: transparent;
+}
+
+#show_results {
+    padding: 3px 8px;
+    border: 1px solid gray;
+    background: lightgray;
+}
+
+.filter-box-content {
+    background: #F5F5F5;
+}
+
+.filter-box-header,
+.filter-box-footer {
+    background: #D9D9D9;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.filter-box-content .card {
+    border: 0;
+    background: transparent;
+    margin-bottom: 15px;
+}
+
+.filter-box-content .btn-link {
+    width: 100%;
+    color: #222222;
+}
+
+.filter-box-content .card-header {
+    padding: 0;
+}
+
+.filter-box-content .card-header:first-child {
+    border-radius: 25px;
+}
+
+.filter-box-content .form-check {
+    border-bottom: 1px solid #d0d0d0;
+}
+.clean-radio { cursor: pointer;}
+
 /* Front page */
 .city-list { 
     background: url(../img/forma-organica.jpg);
@@ -228,6 +323,11 @@ footer { background: #ECECEC; }
     transform: translateY(70px);
 }
 /* Pre nav */
+#fixed-nav {
+    position: fixed;
+    width:100%;
+    z-index:999;
+}
 body.home #fixed-nav-sticky-wrapper {
     height: 246px;
 }
@@ -236,7 +336,8 @@ body.page #fixed-nav-sticky-wrapper {
 }
 .is-sticky #fixed-nav { z-index: 999!important; }
 .is-sticky .custom-nav { margin: 0!important; }
-.is-sticky .city-logo {
+.is-sticky .city-logo,
+.is-sticky .nocity-logo {
     max-width: 120px;
     margin-top: -65px;
     transition: all ease .2s;
@@ -362,6 +463,7 @@ body.page #fixed-nav-sticky-wrapper {
 }
 .section-concejotransparente { 
     background-size: cover;
+    background-position: right center;
 }
 
 /* Concejo municipal */
