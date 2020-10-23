@@ -1,3 +1,68 @@
+/* Loading Overlay */
+.loading-overlay-showing { overflow: hidden; }
+.loading-overlay-showing > .loading-overlay {
+	opacity: 1;
+	visibility: visible;
+}
+.loading-overlay {
+	transition: visibility 0s ease-in-out 0.5s, opacity 0.5s ease-in-out;
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	opacity: 0;
+	right: 0;
+	top: 0;
+	visibility: hidden;
+	background: #FFF;
+}
+body .loading-overlay {
+	position: fixed;
+	z-index: 999999;
+}
+/* Bounce Loading */
+.bounce-loader {
+	transition: all 0.2s;
+	margin: -9px 0 0 -35px;
+	text-align: center;
+	width: 70px;
+	left: 50%;
+	position: absolute;
+	top: 50%;
+	z-index: 10000;
+}
+.bounce-loader .bounce1,
+.bounce-loader .bounce2,
+.bounce-loader .bounce3 {
+	-webkit-animation: 1.4s ease-in-out 0s normal both infinite bouncedelay;
+	animation: 1.4s ease-in-out 0s normal both infinite bouncedelay;
+	background-color: #CCC;
+	border-radius: 100%;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+	display: inline-block;
+	height: 18px;
+	width: 18px;
+}
+
+.bounce-loader .bounce1 {
+	-webkit-animation-delay: -0.32s;
+	animation-delay: -0.32s;
+}
+
+.bounce-loader .bounce2 {
+	-webkit-animation-delay: -0.16s;
+	animation-delay: -0.16s;
+}
+
+@-webkit-keyframes bouncedelay {
+	0%, 80%, 100% { transform: scale(0); }
+	40% {transform: scale(1); }
+}
+@keyframes bouncedelay {
+	0%, 80%, 100% { transform: scale(0); }
+	40% { transform: scale(1);}
+}
+
+
 body { font-family:'Arial', sans-serif; }
 body.mobile-shown { overflow: hidden; }
 footer { background: #ECECEC; }
@@ -380,9 +445,10 @@ body.page #fixed-nav-sticky-wrapper {
     border-right: 1px;
     border-left: 0px;
     border-style: solid;
-    border-color: black;
+    border-color: #383838;
     text-align: center;
     cursor: pointer;
+    position: relative;
 }
 .custom-nav li:last-child{ 
     border-right: none;
@@ -391,7 +457,9 @@ body.page #fixed-nav-sticky-wrapper {
     text-decoration: none;
     display: inline-block;
     width: 100%;
-    padding: 5px;
+    padding: 10px 20px;
+    text-align: center;
+    font-weight: bold;
 }
 .custom-nav li.no-bkg{
     background-color: #ECECEC;
@@ -404,6 +472,17 @@ body.page #fixed-nav-sticky-wrapper {
     background-color: #d2d2d2;
     font-weight: bold;
 }
+.custom-nav .sub-menu li {
+	border: none;
+	border-bottom: 1px solid #e7e7e7
+}
+.custom-nav .sub-menu li:last-child{
+    border-bottom: 0;
+}
+.custom-nav .sub-menu li:hover { 
+    background-color: #B2B2B2;
+}
+.custom-nav .sub-menu li:hover a { color: #5A5C5B; }
 
 /* Single Ciudad */
 .folder-list .folder-popup-image{

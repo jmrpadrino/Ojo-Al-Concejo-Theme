@@ -76,11 +76,12 @@
     .pre-nav.single-page ul li a {
         color: #212529;
     }
-    .custom-nav li{
+    .custom-nav > li{
         background-color: <?php echo $background_default_color; ?>;
+        transition: background-color .2s ease;
     }
-    .custom-nav li:hover{
-        filter: brightness(75%);
+    .custom-nav > li:hover{
+        background-color: <?php echo darken_color($background_default_color, 2); ?>;
     }
     .folder-list .folder-popup-image,
     .folder-list a.folder-icon:hover,
@@ -88,11 +89,11 @@
         background-color: <?php echo $background_default_color; ?>;
     }
     .sub-menu {
-        top: calc(100% - 1px);
+        top: calc(100% + 1px);
         left: 0;
         z-index: 9999;
         width: 100%;
-        background: #fff;
+        background: #F6F6F6;
         visibility: hidden;
         opacity: 0;
         position: absolute;
@@ -100,6 +101,10 @@
         padding: 0;
         margin: 0;
         text-align: left;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    }
+    .sub-menu * {
+        color: #5A5C5B;
     }
     .sub-menu li {
         position: relative;
@@ -116,6 +121,11 @@
         position: relative;
         display: inline-block;
     }
+    .sidemenu-indicator{
+        position: absolute;
+        right: 10px;
+        top: 10px
+    }
     .sub-menu-side {
         display: none;
         position: absolute;
@@ -125,7 +135,7 @@
         z-index: 1;
         width: 100%;
         top:0;
-        left: 250px;
+        left: 100%;
         padding: 0;
     }
     .is-dropdown:hover .sub-menu-side {display: block;}
@@ -194,30 +204,25 @@
                     <li class="menu-item"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/'); ?>">Inicio</a></li>
                     <li class="menu-item item-has-children"><a class="text-white" href="#">Concejo Municipal</a>
                         <ul class="sub-menu">
-                            <li class="ta-l b-gray pl-2">
-                                <a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/consejo-municipal/'); ?>">¿Quiénes lo integran?</a>
+                            <li class="ta-l b-gray">
+                                <a href="<?php echo home_url('/ciudad/'.$ciudad.'/consejo-municipal/'); ?>">¿Quiénes lo integran?</a>
                             </li>
-                            <li class="ta-l b-gray pl-2 is-dropdown">
-                                <!--
-                                <a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/que-ha-hecho-el-consejo-municipal/'); ?>">¿Qué hace?</a>
-                                -->
-                                <a class="text-white" href="#">¿Qué hace?</a>
+                            <li class="ta-l b-gray is-dropdown">
+                                <a href="#">¿Qué hace?</a>
+                                <span class="sidemenu-indicator"><strong><i class="fas fa-chevron-right" style="color: '. $next_city_primary_color .';"></i></strong></span>
                                 <ul class="sub-menu-side">
                                     <?php if (empty($oculta_ordenanza)){ ?>
-                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/proyectos-de-ordenanza/'); ?>">Proyectos de ordenanza</a></li>
+                                    <li class="ta-l b-gray"><a href="<?php echo home_url('/ciudad/'.$ciudad.'/proyectos-de-ordenanza/'); ?>">Proyectos de ordenanza</a></li>
                                     <?php } ?>
                                     <?php if (empty($oculta_resolucion)){ ?>
-                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/proyectos-de-resolucion/'); ?>">Proyectos de resolución</a></li>
+                                    <li class="ta-l b-gray"><a href="<?php echo home_url('/ciudad/'.$ciudad.'/proyectos-de-resolucion/'); ?>">Proyectos de resolución</a></li>
                                     <?php } ?>
                                     <?php if (empty($oculta_observacion)){ ?>
-                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/observaciones-a-proyectos-de-ordenanza/'); ?>">Observaciones a Proyectos de ordenanza</a></li>
+                                    <li class="ta-l b-gray"><a href="<?php echo home_url('/ciudad/'.$ciudad.'/observaciones-a-proyectos-de-ordenanza/'); ?>">Observaciones a Proyectos de ordenanza</a></li>
                                     <?php } ?>
                                     <?php if (empty($oculta_solinfo)){ ?>
-                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/solicitudes-de-informacion/'); ?>">Solocitudes de información</a></li>
-                                    <?php } ?>
-                                    <?php if (empty($oculta_soltransp)){ ?>
-                                    <li class="ta-l b-gray pl-2"><a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/solicitudes-de-comparecencia/'); ?>">Solocitudes de comparecencia</a></li>
-                                    <?php } ?>
+                                    <li class="ta-l b-gray"><a href="<?php echo home_url('/ciudad/'.$ciudad.'/solicitudes-de-informacion/'); ?>">Solicitudes de información</a></li>
+                                    <?php } ?>                                    
                                 </ul>
                             </li>
                         </ul>
@@ -226,7 +231,7 @@
                         <a class="text-white" href="#">Evaluación de gestión</a>
                         <ul class="sub-menu">
                             <li>
-                                <a class="text-white" href="<?php echo home_url('/ciudad/'.$ciudad.'/tu-concejo-en-cifras/'); ?>">Tu Concejo en cifras</a>
+                                <a href="<?php echo home_url('/ciudad/'.$ciudad.'/tu-concejo-en-cifras/'); ?>">Tu Concejo en cifras</a>
                             </li>
                         </ul>
                     </li>
@@ -236,7 +241,7 @@
                             while ($otras_ciudades->have_posts()){
                                 $otras_ciudades->the_post();
                                 $next_city_primary_color = get_post_meta(get_the_ID(), 'oda_ciudad_color', true);
-                                echo '<li class="no-bkg"><a href="' . get_the_permalink() . '">' . get_the_title() . ' <strong><i class="fas fa-chevron-right" style="color: '. $next_city_primary_color .';"></i></strong></a></li>';
+                                echo '<li class="no-bkg"><a href="' . get_the_permalink() . '">' . get_the_title() . '&nbsp;&nbsp;&nbsp;&nbsp;<strong><i class="fas fa-chevron-right fs-18 bold" style="color: '. $next_city_primary_color .';"></i></strong></a></li>';
                             }
                         }
                     }

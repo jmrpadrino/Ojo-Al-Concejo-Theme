@@ -1,4 +1,22 @@
 <?php
+// Oscurecer el color
+function darken_color($rgb, $darker=2) {
+
+    $hash = (strpos($rgb, '#') !== false) ? '#' : '';
+    $rgb = (strlen($rgb) == 7) ? str_replace('#', '', $rgb) : ((strlen($rgb) == 6) ? $rgb : false);
+    if(strlen($rgb) != 6) return $hash.'000000';
+    $darker = ($darker > 1) ? $darker : 1;
+
+    list($R16,$G16,$B16) = str_split($rgb,2);
+
+    $R = sprintf("%02X", floor(hexdec($R16)/$darker));
+    $G = sprintf("%02X", floor(hexdec($G16)/$darker));
+    $B = sprintf("%02X", floor(hexdec($B16)/$darker));
+
+    return $hash.$R.$G.$B;
+}
+
+
 // Comision
 function get_comisiones_ciudad($city_id = ''){
     wp_reset_query();
@@ -461,4 +479,70 @@ function documentos_del_miembro($miembro_id= ''){
         'solicitudes' => $sol_info
     );
     return $documentos;
+}
+
+// obtener el raking de los elementos del concejo
+function get_ranking_votaciones($city_id = ''){
+    $ranking = NULL;
+    $miembros = get_miembro_ciudad($city_id);
+    $mociones = get_mociones_ciudad($city_id);
+    
+    foreach ($miembros->posts as $persona) {
+        $as = $au = $ex = $de = $total =  0;
+        foreach($mociones->posts as $mocion){
+            $metas = get_post_meta($mocion->ID, 'oda_sesion_mocion',true);
+            if(isset($metas[$persona->ID]['member_excusa'])){
+                // se excusó
+                $ex++;
+                if(isset($metas[$persona->ID]['member_suplente'])){
+                    $de++;
+                }
+            }else{
+                // no se excusó, asistíó o no
+                if (isset($metas[$persona->ID]['member_ausente'])){
+                    // No asistió y se excusó se cuentan votos para suplente
+                    $au++;
+                }else{
+                    // Asistió se cuentan votos a miembro principal
+                    switch ($metas[$persona->ID]['mocion_voto']) {
+                        case '1':
+                            $si++; $as++; $total++;
+                            break;
+                        case '2':
+                            $no++; $as++; $total++;
+                            break;
+                        case '3':
+                            $ab++; $as++; $total++;
+                            break;
+                        case '4':
+                            $bl++; $as++; $total++;
+                            break;
+                    }
+                }
+            }
+        }
+        //echo $persona->ID .' - '. $as . '<br />';
+        $ranking[] = array(
+            'id' => $persona->ID,
+            'title' => $persona->post_title,
+            'apellidos' => get_post_meta($persona->ID, 'oda_miembro_apellidos', true),
+            'thumbnail' => get_the_post_thumbnail_url(
+                $persona->ID, 
+                'thumbnail'
+            ),
+            'partido' => get_the_post_thumbnail_url(
+                get_post_meta($persona->ID, 'oda_partido_owner', true), 
+                'thumbnail'
+            ),
+            'titularizado' => get_post_meta($persona->ID, 'oda_miembro_titularizado', true),
+            'total' => $mociones->post_count,
+            'as' => $as,
+            'au' => $au,
+            'ex' => $ex,
+            'de' => $de,
+        );
+    }
+    return $ranking;
+
+    // $votos_si['voto'] = 'Afirmativos ('. number_format(($si*100) / $total,2) .'%)';
 }
