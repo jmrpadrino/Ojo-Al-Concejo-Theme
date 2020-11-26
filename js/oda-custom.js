@@ -2,19 +2,22 @@ Date.prototype.getUnixTime = function() { return this.getTime()/1000|0 };
 $(document).ready(function() {
     var dateSearch = false;
     console.log('App Start');
-    $('#buscar').click(function(){
-        query = $('#query').val();
-        console.log(query);
-        $('.documento').addClass('deactivated');
-        $.each($('.documento-title'), function(index, value){
-            if ( $(this).text().toLowerCase().includes(query.toLowerCase()) ){
-                $(this).parents('.documento').removeClass('deactivated');
-            }
-        })
-        
+    $('#buscar').click(oda_search)
+    $('#query').on('keyup', function(e){
+        if (e.key === 'Enter' || e.keyCode === 13){
+            oda_search()
+        }
     })
-
-    //$('input[name="date_test"]').daterangepicker();
+    /*
+    $('input[name="date_test"]').daterangepicker(
+        {
+            locale: 'U'
+        },
+        function(start, end, label){
+            console.log(start)
+            console.log(end)
+        }
+    )*/
     $('#city_filters').change(function(e) {
         var fechaInicio = $('input[name="date_i"]');
         var fechaFin = $('input[name="date_e"]');
@@ -265,7 +268,97 @@ $(document).ready(function() {
         });
         
     })
+	// Clic en EXCEL
+    $('.excel-ranking').click( function(){
+        var filter = $('.data-placeholder.activated').data('target');
+        var cityid = $('.data-placeholder.activated').data('city');
+        var citiName = $('.main-container').data('cityname');
+        $.ajax({
+            url: oda_dom_vars.ajaxurl,
+            type: 'GET',
+            data: {
+                action: 'oda_generate_xls',
+                filter: filter,
+                city: cityid,
+                cityname:citiName
+            },
+            /*
+            xhrFields: {
+                responseType: 'blob'
+            },
+            */
+            beforeSend: function(){
+                //$('body').toggleClass('loading-overlay-showing');
+            },
+            success: function(data){
+                //$('body').toggleClass('loading-overlay-showing');
+                console.log(data);
+                var $a = $("<a>");
+                $a.attr("href",data.file);
+                $("body").append($a);
+                $a.attr("download","file.xls");
+                $a[0].click();
+                $a.remove();
+                /*
+                var a = document.createElement('a');
+                var url = window.URL.createObjectURL(data);
+                a.href = url;
+                a.download = 'oc_'+citiName+'_'+filter+'.csv';
+                document.body.append(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                */
+            },
+            error: function(xhr,err){
+                console.log(err);
+                console.log(xhr);
+            }
+
+        })
+
+    })
 })
+    // Clic en CSV 
+    $('.csv-ranking').click( function(){
+        var filter = $('.data-placeholder.activated').data('target');
+        var cityid = $('.data-placeholder.activated').data('city');
+        var citiName = $('.main-container').data('cityname');
+        $.ajax({
+            url: oda_dom_vars.ajaxurl,
+            type: 'GET',
+            data: {
+                action: 'oda_generate_csv',
+                filter: filter,
+                city: cityid
+            },
+            /*
+            xhrFields: {
+                responseType: 'blob'
+            },
+            */
+            beforeSend: function(){
+                $('body').toggleClass('loading-overlay-showing');
+            },
+            success: function(data){
+                $('body').toggleClass('loading-overlay-showing');
+                console.log(data);
+                /*
+                var a = document.createElement('a');
+                var url = window.URL.createObjectURL(data);
+                a.href = url;
+                a.download = 'oc_'+citiName+'_'+filter+'.csv';
+                document.body.append(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                */
+            }
+
+        })
+
+    })
+
 
 function expandAll() {
     console.log('click');
@@ -278,4 +371,14 @@ function expandAll() {
     $('#genero .btn').click();
     $('#organizacion .btn').click();
     $('#comision .btn').click();
+}
+
+function oda_search(){
+    query = $('#query').val();
+        $('.documento').addClass('deactivated');
+        $.each($('.documento-title'), function(index, value){
+            if ( $(this).text().toLowerCase().includes(query.toLowerCase()) ){
+                $(this).parents('.documento').removeClass('deactivated');
+            }
+        })
 }

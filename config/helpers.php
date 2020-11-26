@@ -521,6 +521,7 @@ function get_ranking_votaciones($city_id = ''){
                 }
             }
         }
+        $documentos = documentos_del_miembro($persona->ID);
         //echo $persona->ID .' - '. $as . '<br />';
         $ranking[] = array(
             'id' => $persona->ID,
@@ -540,9 +541,71 @@ function get_ranking_votaciones($city_id = ''){
             'au' => $au,
             'ex' => $ex,
             'de' => $de,
+            'or' => $documentos['ordenanzas'],
+            're' => $documentos['resoluciones'],
+            'ob' => $documentos['observaciones'],
+            'so' => $documentos['solicitudes'],
         );
     }
     return $ranking;
 
     // $votos_si['voto'] = 'Afirmativos ('. number_format(($si*100) / $total,2) .'%)';
+}
+
+// Mostrar la imagen y/o el tuit cuando no hay información en evaluacion de gestion
+function mostrar_imagen_twitter_evaluacion($documento = '', $city){
+    if(!$documento){
+        return false;
+    }else{
+        $image = 'http://placehold.it/800x600?text=Concejo%20Transparente';
+        $tuit = '';
+        switch ($documento){
+            case 'mociones': 
+                $imagen_meta = get_post_meta($city, 'oda_ciudad_image_evaluacion_mociones', true);
+                $tuit_meta = get_post_meta($city, 'oda_ciudad_tweet_evaluacion_mociones', true);
+                $image = ($imagen_meta) ? $imagen_meta : $image;
+                $tuit = ($tuit_meta) ? $tuit_meta : '';
+            break;
+            case 'ordenanzas': 
+                $imagen_meta = get_post_meta($city, 'oda_ciudad_image_evaluacion_ordenanzas', true);
+                $tuit_meta = get_post_meta($city, 'oda_ciudad_tweet_evaluacion_ordenanzas', true);
+                $image = ($imagen_meta) ? $imagen_meta : $image;
+                $tuit = ($tuit_meta) ? $tuit_meta : '';
+            break;
+            case 'resoluciones': 
+                $imagen_meta = get_post_meta($city, 'oda_ciudad_image_evaluacion_resoluciones', true);
+                $tuit_meta = get_post_meta($city, 'oda_ciudad_tweet_evaluacion_resoluciones', true);
+                $image = ($imagen_meta) ? $imagen_meta : $image;
+                $tuit = ($tuit_meta) ? $tuit_meta : '';
+            break;
+            case 'observaciones': 
+                $imagen_meta = get_post_meta($city, 'oda_ciudad_image_evaluacion_observaciones', true);
+                $tuit_meta = get_post_meta($city, 'oda_ciudad_tweet_evaluacion_observaciones', true);
+                $image = ($imagen_meta) ? $imagen_meta : $image;
+                $tuit = ($tuit_meta) ? $tuit_meta : '';
+            break;
+            case 'solicitudes': 
+                $imagen_meta = get_post_meta($city, 'oda_ciudad_image_evaluacion_solicitudes', true);
+                $tuit_meta = get_post_meta($city, 'oda_ciudad_tweet_evaluacion_solicitudes', true);
+                $image = ($imagen_meta) ? $imagen_meta : $image;
+                $tuit = ($tuit_meta) ? $tuit_meta : '';
+            break;
+        }
+?>
+    <div class="row">
+        <div class="col-sm-12 mb-3">
+            <img src="<?php echo $image; ?>" class="img-fluid">
+        </div>
+        <div class="col-sm-12 text-center mt-3">
+            <?php if($tuit){ ?>
+            <a href="https://twitter.com/intent/tweet?text=<?php echo $tuit; ?>" style="text-decoration: none;">
+                <span class="twitter-circle-icon"><i class="fab fa-twitter text-white fs-20"></i></span>
+            </a>
+            <br />
+            <p>¡Envía un Tweet a tu Concejo!</p>
+            <?php } ?>
+        </div>
+    </div>
+<?php        
+    }
 }

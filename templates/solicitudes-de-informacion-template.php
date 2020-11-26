@@ -18,21 +18,6 @@ $solicitudes = get_solicitudes_informacion($item->ID);
     .info-sign-filters {
         color: <?php echo $city_primary_color; ?>;
     }
-    .pagination-list li {
-        margin-left: 10px;
-    }
-    .listado-documentos .card {
-        border: none;
-        border-radius: 0;
-        border-top: 1px solid gray;
-        background: transparent;
-    }
-    .listado-documentos .card .card-header { 
-        background: transparent;
-    }
-    .listado-documentos .card.deactivated {
-        display: none;
-    }
 </style>
 <section class="main-container pt-4">
     <div class="container">
@@ -40,14 +25,14 @@ $solicitudes = get_solicitudes_informacion($item->ID);
             <div class="col-12 col-lg-3">
                 <div class="row">
                     <div class="col">
-                        <h1 class="fs-24">Solicitudes de información y sus respuestas</h1>
+                        <h1 class="fs-20 bold">Solicitudes de información y sus respuestas</h1>
                         <p>Búsqueda fácil según el título del documento o el nombre del solicitante.</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-2">
                         <a href="#" data-toggle="modal" data-target="#howtofilters">
-                            <i class="fas fa-info-circle info-sign-filters fs-26 mb-3"></i>
+                            <i class="fas fa-info-circle info-sign-filters fs-26"></i>
                         </a>
                     </div>
                     <div class="col-md-10 fs-14 text-center">
@@ -77,7 +62,7 @@ $solicitudes = get_solicitudes_informacion($item->ID);
                     <form id="city_filters" role="form">
                         <div class="row filter-box-header bold">
                             <div class="col-5 col-sm-5">Filtros</div>
-                            <div class="col-7 col-sm-7 text-right"> <span onclick="expandAll()"><span id="expand_text">|&nbsp;&nbsp;Expandir</span> todo</span></div>
+                            <div class="col-7 col-sm-7 text-right"> |&nbsp;&nbsp;<span onclick="expandAll()"><span id="expand_text">Expandir</span> todo</span></div>
                         </div>
                         <div class="row filter-box-content">
                             <div class="col-sm-12 p-3">
@@ -176,7 +161,7 @@ $solicitudes = get_solicitudes_informacion($item->ID);
                     </form>
                 </div>
             </div>
-            <div class="col-12 col-lg-9">
+            <div class="col-12 col-lg-9 pl-5">
                 <h2 class="fs-16">Listado</h2>
                 <hr />
                 <?php if ($solicitudes->have_posts()) { ?>
@@ -191,7 +176,7 @@ $solicitudes = get_solicitudes_informacion($item->ID);
                             </ul>
                         </div>
                     </div>
-                    <div class="row mt-2">
+                    <div class="row mt-1">
                         <div class="col-12">
                             <div class="accordion listado-documentos" id="listadoOrdenanzas">
                                 <?php
@@ -203,8 +188,8 @@ $solicitudes = get_solicitudes_informacion($item->ID);
                                 ?>
                                     <div class="card com-<?php echo $comision; ?>">
                                         <div class="card-header" id="heading-<?php echo get_the_ID(); ?>">
-                                            <h2 class="mb-0">
-                                                <a class="text-left text-black-light collapsed fs-16 bold cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo get_the_ID(); ?>" aria-expanded="false" aria-controls="collapse-<?php echo get_the_ID(); ?>">
+                                            <h2 class="mb-0 fs-16 lh-1 hover-underlined">
+                                                <a class="text-left text-black-light collapsed cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo get_the_ID(); ?>" aria-expanded="false" aria-controls="collapse-<?php echo get_the_ID(); ?>">
                                                     <?php echo get_the_title(); ?>
                                                 </a>
                                             </h2>

@@ -234,8 +234,43 @@ footer { background: #ECECEC; }
     text-decoration: none;
     color: white;
 }
+.btn-secondary { background: #C6C6C6; color: white; border: 0; }
+.btn-oda { 
+    background: #e9e9e9;
+    max-width: 103px;
+    color: #797979;
+    display: inline-flex;
+    justify-content: space-between;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 5px;
+    font-weight: bold;
+}
+.button-name {
+    padding: 3px 0;
+    background: #e6e6e6;
+    border: 1px solid #e1e1e1;
+    min-width: 70px;
+    text-align: center;
+}
+.button-icon {
+    padding: 3px 10px;
+    background: #d6d6d6;
+    border: 1px solid #e1e1e1;
+}
+.btn-oda:hover .button-name{
+    background: #c3c3c3;
+}
+.link-btn:hover { text-decoration: none; }
+#query { 
+    width: 145px;
+    border: none;
+    border-bottom: 2px solid #E4E4E4 !important;
+}
+#query::placeholder { font-style: italic;}
 /* Cursors */
 .cursor-pointer { cursor: pointer; }
+.hover-underlined:hover { text-decoration: underline; }
 /* Modals */
 
 .modal-content { 
@@ -345,16 +380,22 @@ footer { background: #ECECEC; }
 
 .filter-box-header,
 .filter-box-footer {
-    background: #D9D9D9;
+    background: #DADADA;
     padding-top: 3px;
     padding-bottom: 3px;
+}
+.filter-box-header *,
+.filter-box-footer * {
+    color: #5F5F5F;
 }
 
 .filter-box-content .card {
     border: 0;
     background: transparent;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
+.filter-box-content * { color: #5F5F5F; }
+.filter-box-content .fa-chevron-down { font-size: 12px; }
 
 .filter-box-content .btn-link {
     width: 100%;
@@ -363,6 +404,8 @@ footer { background: #ECECEC; }
 
 .filter-box-content .card-header {
     padding: 0;
+    background: #DADADA;
+    border: 1px solid #CCCCCC;
 }
 
 .filter-box-content .card-header:first-child {
@@ -557,7 +600,94 @@ body.page #fixed-nav-sticky-wrapper {
 .member-thumbnail img {
     background-color: #B1B1B1;
 }
+/* Que ha hecho el concejo */
+.pagination-list li {
+    margin-left: 10px;
+}
 
+.listado-documentos .card {
+    border: none;
+    border-radius: 0;
+    border-top: 1px solid #E0E0E0;
+    background: transparent;
+}
+
+.listado-documentos .card .card-header {
+    background: transparent;
+}
+
+.listado-documentos .card.deactivated {
+    display: none;
+}
+
+.fase-item-container {
+    padding: 0;
+}
+.fase-item-thumbnail { 
+    width: 80px; height:80px; margin: 0 auto;
+    border: 4px solid;
+    border-radius: 50%;
+    border-color: #CECECE;
+}
+.fase-item-thumbnail img { transform: scale(0.6)}
+
+    .fase-item-counter-container {
+        position: relative;
+    }
+
+    .fase-item-counter-container .fase-item-counter {
+        position: absolute;
+        left: 20%;
+        top: -10px;
+        background: white;
+        line-height: 1;
+        padding: 1px;
+        border-radius: 6px;
+        color: #CECECE;
+    }
+    .fase-separador {
+        height: 10px;
+        background: #cecece;
+        margin-top: 13px;
+        position: relative;
+    }
+    .fase-separador:after {
+        content:'';
+        display: block;
+        position: absolute;
+        width: 3px;
+        height: 15px;
+        bottom: 10px;
+        left: 50.7%;
+        background: #CECECE;
+    }
+    .fase-separador:before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 50%;
+        color: #ffc107;
+        top: 2px;
+        line-height: 0;
+        width: 5px;
+        height: 5px;
+        background: white;
+        border-radius: 50%;
+    }
+    .fase-item-container:nth-child(1) .fase-separador {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+
+    .fase-item-container:last-child .fase-separador {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    #chartdiv {
+        width: 100%;
+        height: 300px;
+    }
 @media only screen and ( max-width: 768px ){
     .custom-nav { font-size: 14px!important; }
 }

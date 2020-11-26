@@ -77,6 +77,47 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
         justify-content: center;
         align-items: center;
     }
+    .stat-item-element {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .stat-item-line {
+        width: 2px;
+        height: 36px;
+        background: <?php echo $city_color; ?>;
+        display: block;
+    }
+    .stat-item-circle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid gray;
+        width: 12px;
+        height: 12px;
+        margin: 0 auto;
+        border-radius: 50%;
+    }
+    .stat-item-circle span { 
+        width: 6px;
+        height: 6px;
+        background: <?php echo $city_color; ?>;
+        border-radius: 50%;
+        display: block;
+    }
+    .mask-parent{ position: relative; }
+    .mask-node{ 
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(128,128,128,0.75);
+    }
+    .mask-top {}
+    .mask-bottom { overflow: hidden; }
+    .bg-twitter { background-color: #04A8EE; }
 </style>
 <section class="main-container">
     <div class="container pt-3 pb-3">
@@ -238,11 +279,11 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                 if (!empty($thumbnail_url)) {
                                     echo '<div class="single_miembro_thumbnail w-100">';
                                     echo '<img class="img-fluid m0-auto d-block" src="' . $thumbnail_url . '">';
-                                    echo '<div class="white-gradient1"></div>';
+                                    echo '<div class="white-gradient"></div>';
                                     echo '</div>';
                                 }
                                 ?>
-                                <div class="col-12 mt-3">
+                                <div class="col-12 mt-3 mb-3">
                                 <h1 class="fs-18 ta-c"><?php echo get_post_meta($the_member->ID, 'oda_miembro_nombres', true);//$the_member->post_title; ?> <strong><?php echo get_post_meta($the_member->ID, 'oda_miembro_apellidos', true); ?></strong></h1>
                                 </div>
                             </div>
@@ -259,7 +300,7 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                         <div class="carousel-inner pl-3 pr-3">
                             <div class="carousel-item active">
                                 <div class="row">
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-12 mask-parent">
                                         <h3 class="fs-20 ta-c">Total de <strong>votaciones posibles: <?php echo ($stats['asistencias'] + $stats['ausencias'] + $stats['delego']) ?></strong></h3>
                                         <br />
                                         <div class="row">
@@ -268,7 +309,10 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                     <div class="stat-item-number">
                                                         <span><?php echo ($stats['asistencias']); ?></span>
                                                     </div>
-                                                    <div class="stat-item-element"></div>
+                                                    <div class="stat-item-element">
+                                                        <div class="stat-item-line"></div>
+                                                        <div class="stat-item-circle"><span></span></div>
+                                                    </div>
                                                 </div>
                                                 <p class="ta-c bold">Asistencias</p>
                                             </div>
@@ -277,7 +321,10 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                     <div class="stat-item-number">
                                                         <span><?php echo ($stats['ausencias']); ?></span>
                                                     </div>
-                                                    <div class="stat-item-element"></div>
+                                                    <div class="stat-item-element">
+                                                        <div class="stat-item-line"></div>
+                                                        <div class="stat-item-circle"><span></span></div>
+                                                    </div>
                                                 </div>
                                                 <p class="ta-c bold">Ausencias</p>
                                             </div>
@@ -286,7 +333,10 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                     <div class="stat-item-number">
                                                         <span><?php echo ($stats['delego']); ?></span>
                                                     </div>
-                                                    <div class="stat-item-element"></div>
+                                                    <div class="stat-item-element">
+                                                        <div class="stat-item-line"></div>
+                                                        <div class="stat-item-circle"><span></span></div>
+                                                    </div>
                                                 </div>
                                                 <p class="ta-c">Realizadas por el <strong>suplente</strong></p>
                                             </div>
@@ -297,6 +347,23 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                             if($titularizado){
                                         ?>
                                         <p class="ta-c">* El total de votaciones posibles de este miembro del Concejo difiere del resto debido a que se titularizó tras la renuncia/ausencia del titular.</p>
+                                        <?php } ?>
+                                        <?php if (get_mociones_ciudad($the_member_city)->post_count < 1){ ?>
+                                        <div class="mask-node d-flex flex-column justify-content-center align-items-center">
+                                            <div class="w-100 text-center p-4 mask-top bg-ececec">
+                                                <span>El <strong>Concejo no transparenta información sobre:</strong> asistencias, ausencias o suplencias de este concejal.</span>
+                                            </div>
+                                            <div class="mask-bottom mx-5 my-5 rounded-lg bg-ececec d-flex">
+                                                <div class="p-4">
+                                                    <span>Exige al Concejo que <strong>transparente esta información</strong></span>
+                                                </div>
+                                                <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                <div class="bg-twitter p-4">
+                                                    <i class="fab fa-twitter fs-28 text-white"></i>
+                                                </div>
+                                                </a>
+                                            </div>
+                                        </div>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -312,18 +379,58 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                     <div class="stat-item-number">
                                                         <span><?php echo ($docs['ordenanzas']); ?></span>
                                                     </div>
-                                                    <div class="stat-item-element"></div>
+                                                    <div class="stat-item-element">
+                                                        <div class="stat-item-line"></div>
+                                                        <div class="stat-item-circle"><span></span></div>
+                                                    </div>
                                                 </div>
                                                 <p class="ta-c">Proyectos de <strong>ordenanzas presentados</strong></p>
+                                                <?php if ($docs['ordenanzas'] == 0){ ?>
+                                                <div class="mask-node d-flex flex-column justify-content-center align-items-center">
+                                                    <div class="w-100 text-center p-2 mask-top bg-ececec">
+                                                        <span class="fs-14">El <strong>Concejo no transparenta información sobre:</strong> Proyectos de ordenanzas presentados.</span>
+                                                    </div>
+                                                    <div class="mask-bottom mx-3 my-4 rounded-lg bg-ececec d-flex align-items-center">
+                                                        <div class="p-0 fs-12 text-center">
+                                                            <span class="d-block mx-2">Exige al Concejo que <strong>transparente esta información</strong></span>
+                                                        </div>
+                                                        <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                        <div class="bg-twitter p-2">
+                                                            <i class="fab fa-twitter fs-22 text-white"></i>
+                                                        </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <?php } ?>
                                             </div>
                                             <div class="col-sm-5">
                                                 <div class="stat-item-placeholder">
                                                     <div class="stat-item-number">
                                                         <span><?php echo ($docs['resoluciones']); ?></span>
                                                     </div>
-                                                    <div class="stat-item-element"></div>
+                                                    <div class="stat-item-element">
+                                                        <div class="stat-item-line"></div>
+                                                        <div class="stat-item-circle"><span></span></div>
+                                                    </div>
                                                 </div>
                                                 <p class="ta-c">Proyectos de <strong>resoluciones presentados</strong></p>
+                                                <?php if ($docs['resoluciones'] == 0){ ?>
+                                                <div class="mask-node d-flex flex-column justify-content-center align-items-center">
+                                                    <div class="w-100 text-center p-2 mask-top bg-ececec">
+                                                        <span class="fs-14">El <strong>Concejo no transparenta información sobre:</strong> Proyectos de resoluciones presentados.</span>
+                                                    </div>
+                                                    <div class="mask-bottom mx-3 my-4 rounded-lg bg-ececec d-flex align-items-center">
+                                                        <div class="p-0 fs-12 text-center">
+                                                            <span class="d-block mx-2">Exige al Concejo que <strong>transparente esta información</strong></span>
+                                                        </div>
+                                                        <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                        <div class="bg-twitter p-2">
+                                                            <i class="fab fa-twitter fs-22 text-white"></i>
+                                                        </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <?php } ?>
                                             </div>
                                         </div>
                                         <br />
@@ -343,18 +450,58 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                     <div class="stat-item-number">
                                                         <span><?php echo ($docs['observaciones']); ?></span>
                                                     </div>
-                                                    <div class="stat-item-element"></div>
+                                                    <div class="stat-item-element">
+                                                        <div class="stat-item-line"></div>
+                                                        <div class="stat-item-circle"><span></span></div>
+                                                    </div>
                                                 </div>
                                                 <p class="ta-c">Observaciones a <br/><strong>Proyectos de ordenanzas</strong></p>
+                                                <?php if ($docs['observaciones'] == 0){ ?>
+                                                <div class="mask-node d-flex flex-column justify-content-center align-items-center">
+                                                    <div class="w-100 text-center p-2 mask-top bg-ececec">
+                                                        <span class="fs-14">El <strong>Concejo no transparenta información sobre:</strong> Observaciones a Proyectos de ordenanzas.</span>
+                                                    </div>
+                                                    <div class="mask-bottom mx-3 my-4 rounded-lg bg-ececec d-flex align-items-center">
+                                                        <div class="p-0 fs-12 text-center">
+                                                            <span class="d-block mx-2">Exige al Concejo que <strong>transparente esta información</strong></span>
+                                                        </div>
+                                                        <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                        <div class="bg-twitter p-2">
+                                                            <i class="fab fa-twitter fs-22 text-white"></i>
+                                                        </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <?php } ?>
                                             </div>
                                             <div class="col-sm-5">
                                                 <div class="stat-item-placeholder">
                                                     <div class="stat-item-number">
                                                         <span><?php echo ($docs['solicitudes']); ?></span>
                                                     </div>
-                                                    <div class="stat-item-element"></div>
+                                                    <div class="stat-item-element">
+                                                        <div class="stat-item-line"></div>
+                                                        <div class="stat-item-circle"><span></span></div>
+                                                    </div>
                                                 </div>
                                                 <p class="ta-c">Solucitudes de <br /><strong>información</strong></p>
+                                                <?php if ($docs['solicitudes'] == 0){ ?>
+                                                <div class="mask-node d-flex flex-column justify-content-center align-items-center">
+                                                    <div class="w-100 text-center p-2 mask-top bg-ececec">
+                                                        <span class="fs-14">El <strong>Concejo no transparenta información sobre:</strong> Solicitudes de información.</span>
+                                                    </div>
+                                                    <div class="mask-bottom mx-3 my-4 rounded-lg bg-ececec d-flex align-items-center">
+                                                        <div class="p-0 fs-12 text-center">
+                                                            <span class="d-block mx-2">Exige al Concejo que <strong>transparente esta información</strong></span>
+                                                        </div>
+                                                        <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                        <div class="bg-twitter p-2">
+                                                            <i class="fab fa-twitter fs-22 text-white"></i>
+                                                        </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <?php } ?>
                                             </div>
                                         </div>
                                         <br />

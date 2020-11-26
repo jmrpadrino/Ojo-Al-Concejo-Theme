@@ -200,7 +200,17 @@ wp_reset_postdata();
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-5 offset-md-1 mt-sm-3">
-                    <img class="img-fluid" src="<?php echo THEME_URL . '/img/Proximamente-Home.png'; ?>">
+                <?php 
+                    $imagen_indicadores = get_post_meta(get_the_ID(), 'oda_ciudad_info_image_indicadores', true); 
+                    if ($imagen_indicadores){
+                        echo '<img class="img-fluid" src="'. $imagen_indicadores .'">';
+                    }else{
+                ?>
+                <img class="img-fluid" src="<?php echo THEME_URL . '/img/Proximamente-Home.png'; ?>">
+                <?php 
+                    }
+                ?>
+
                 </div>
             </div>
         </div>

@@ -24,110 +24,16 @@ $iniciativa_tipo = array(
 <style>
     .info-sign-filters,
     .city-text-color,
-    .active-filter {
+    .active-filter,
+    .city-bkg-color .fase-item-counter  {
         color: <?php echo $city_primary_color; ?> !important;
-    }
-
-    .pagination-list li {
-        margin-left: 10px;
-    }
-
-    .listado-documentos .card {
-        border: none;
-        border-radius: 0;
-        border-top: 1px solid gray;
-        background: transparent;
-    }
-
-    .listado-documentos .card .card-header {
-        background: transparent;
-    }
-
-    .listado-documentos .card.deactivated {
-        display: none;
-    }
-
-    .fase-item-container {
-        padding: 0;
-    }
-    .fase-item-thumbnail { 
-        width: 80px; height:80px; margin: 0 auto;
-        border: 4px solid;
-        border-radius: 50%;
-        border-color: #CECECE;
     }
     .city-bkg-color .fase-item-thumbnail { 
         border-color: <?php echo $city_primary_color; ?>;
-    }
-    .fase-item-thumbnail img { transform: scale(0.6)}
-
-    .fase-item-counter-container {
-        position: relative;
-    }
-
-    .fase-item-counter-container .fase-item-counter {
-        position: absolute;
-        left: 20%;
-        top: -10px;
-        background: white;
-        line-height: 1;
-        padding: 1px;
-        border-radius: 6px;
-        color: #CECECE;
-    }
-    .city-bkg-color .fase-item-counter { 
-        color: <?php echo $city_primary_color; ?>;
-    }
-
-    .fase-separador {
-        height: 10px;
-        background: #cecece;
-        margin-top: 13px;
-        position: relative;
-    }
-    .fase-separador:after {
-        content:'';
-        display: block;
-        position: absolute;
-        width: 3px;
-        height: 15px;
-        bottom: 10px;
-        left: 50.7%;
-        background: #CECECE;
-    }
+    } 
     .city-bkg-color .fase-separador:after { background: <?php echo $city_primary_color; ?>; }
-
-    .fase-separador:before {
-        content: '';
-        display: block;
-        position: absolute;
-        left: 50%;
-        color: #ffc107;
-        top: 2px;
-        line-height: 0;
-        width: 5px;
-        height: 5px;
-        background: white;
-        border-radius: 50%;
-    }
-
     .city-bkg-color .fase-separador {
         background: <?php echo $city_primary_color; ?>;
-    }
-
-    .fase-item-container:nth-child(1) .fase-separador {
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-    }
-
-    .fase-item-container:last-child .fase-separador {
-        border-top-right-radius: 5px;
-        border-bottom-right-radius: 5px;
-    }
-
-    #chartdiv {
-        width: 100%;
-        height: 300px;
     }
 </style>
 <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
@@ -142,21 +48,21 @@ $iniciativa_tipo = array(
             <div class="col-12 col-lg-3">
                 <div class="row">
                     <div class="col">
-                        <h1 class="fs-24">Proyectos de ordenanzas</h1>
+                        <h1 class="fs-20 bold">Proyectos de ordenanzas</h1>
                         <p>Búsqueda fácil según el título del documento o el nombre del proponente.</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-2">
                         <a href="#" data-toggle="modal" data-target="#howtofilters">
-                            <i class="fas fa-info-circle info-sign-filters fs-26 mb-3"></i>
+                            <i class="fas fa-info-circle info-sign-filters fs-26"></i>
                         </a>
                     </div>
                     <div class="col-md-10 fs-14 text-center">
                         <div id="show_results" style="display: none;">Resultados encontrados: <span id="results_amount" class="bold"></span></div>
                     </div>
                     <div class="col-sm-12 px-2 py-2 my-2 d-flex justify-space-around align-items-center bg-light border">
-                        <input id="query" type="text" name="search" placeholder="Palabra clave" style="width: 145px; border: none; border-bottom: 1px solid;" class="mr-1 bg-transparent">
+                        <input id="query" type="text" name="search" placeholder="Palabra clave" class="mr-1 bg-transparent">
                         <button id="buscar" type="button" class="btn btn-secondary btn-sm rounded-0 fs-12"><span class="fa fa-search"></span> BUSCAR</button>
                     </div>
                     <div class="modal fade" id="howtofilters">
@@ -183,7 +89,7 @@ $iniciativa_tipo = array(
                     <form id="city_filters" role="form">
                         <div class="row filter-box-header bold">
                             <div class="col-5 col-sm-5">Filtros</div>
-                            <div class="col-7 col-sm-7 text-right"> <span onclick="expandAll()"><span id="expand_text">|&nbsp;&nbsp;Expandir</span> todo</span></div>
+                            <div class="col-7 col-sm-7 text-right"> |&nbsp;&nbsp;<span onclick="expandAll()"><span id="expand_text">Expandir</span> todo</span></div>
                         </div>
                         <div class="row filter-box-content">
                             <div class="col-sm-12 p-3">
@@ -194,7 +100,7 @@ $iniciativa_tipo = array(
                                                 <h5 class="mb-0">
                                                     <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#temasc" aria-expanded="false" aria-controls="temasc">
                                                         <div class="row">
-                                                            <div class="col-10 col-sm-10 text-left fs-14">Temas</div>
+                                                            <div class="col-10 col-sm-10 text-left fs-14">Tema</div>
                                                             <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
                                                         </div>
                                                     </button>
@@ -359,9 +265,11 @@ $iniciativa_tipo = array(
                             <div class="col-8 col-sm-8 text-right"><button id="clear_filters" type="reset" class="btn-clear-filters bold">|&nbsp;&nbsp;Borrar filtros</button></div>
                         </div>
                     </form>
+
+                    fecha<input type="text" name="date_test">
                 </div>
             </div>
-            <div class="col-12 col-lg-9">
+            <div class="col-12 col-lg-9 pl-5">
                 <h2 class="fs-16">Listado</h2>
                 <?php if ($documentos->have_posts()) { ?>
                     <?php if ($documentos->post_count > 10) { ?>
@@ -378,7 +286,7 @@ $iniciativa_tipo = array(
                             </div>
                         </div>
                     <?php } ?>
-                    <div class="row mt-2">
+                    <div class="row mt-1">
                         <div class="col-12">
                             <div class="accordion listado-documentos" id="listadodocumentos">
                                 <?php
@@ -405,8 +313,8 @@ $iniciativa_tipo = array(
                                                     }
                                                     ?>" data-date="<?php echo ($fecha_documento) ? date('U', strtotime($fecha_documento)) : ''; ?>">
                                         <div class="card-header" id="heading-<?php echo get_the_ID(); ?>">
-                                            <h2 class="mb-0">
-                                                <a class="text-left text-black-light collapsed fs-16 bold cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo get_the_ID(); ?>" aria-expanded="false" aria-controls="collapse-<?php echo get_the_ID(); ?>">
+                                            <h2 class="mb-0 fs-16 lh-1 hover-underlined">
+                                                <a class="text-left text-black-light collapsed cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo get_the_ID(); ?>" aria-expanded="false" aria-controls="collapse-<?php echo get_the_ID(); ?>">
                                                     <span class="documento-title"><?php echo get_the_title(); ?></span>
                                                 </a>
                                             </h2>
@@ -462,14 +370,14 @@ $iniciativa_tipo = array(
                                                                             </div>
                                                                             <div class="fase-separador "></div>
                                                                             <div class="ta-c mt-2">
-                                                                                <span class="fs-14 bold ta-c"><?php echo $meta_fase_name; ?></span><br />
+                                                                                <p class="fs-14 bold ta-c lh-1 mb-1"><?php echo $meta_fase_name; ?></p>
                                                                                 <?php if ($meta_fase_date) { ?>
-                                                                                    <span class="fs-12 ta-c"><?php echo date('d/m/Y', strtotime($meta_fase_date)); ?></span><br />
+                                                                                    <p class="fs-12 ta-c lh-1 mb-0"><?php echo date('d/m/Y', strtotime($meta_fase_date)); ?></p>
+                                                                                <?php } ?>
+                                                                                <?php if ($meta_fase_file) { ?>
+                                                                                    <span class="fs-12 ta-c"><a class="text-black-light" href="<?php echo $meta_fase_file; ?>" target="_blank">Ver</a> - <a class="text-black-light" href="<?php echo $meta_fase_file; ?>" download>Descargar</a></span>
                                                                                 <?php } ?>
                                                                                 <?php if (!$meta_fase_votacion) { ?>
-                                                                                    <?php if ($meta_fase_file) { ?>
-                                                                                        <span class="fs-12 ta-c"><a href="<?php echo $meta_fase_file; ?>" target="_blank">Ver</a> - <a href="<?php echo $meta_fase_file; ?>" download>Descargar</a></span>
-                                                                                    <?php } ?>
                                                                                 <?php } else { ?>
                                                                                     <?php
                                                                                     // Se configura con el slug del partido que se quiere representar en el grafico
@@ -508,7 +416,7 @@ $iniciativa_tipo = array(
 
                                                                                     if ($votos) {
                                                                                     ?>
-                                                                                        <span class="fs-12 ta-c"><a class="show_votacion" href="#" data-toggle="modal" data-target="#votacion_ordenanza" data-modaltitle="<?php echo get_the_title(); ?>" data-partidosinfo='<?php echo json_encode($partidos_info); ?>'>Ver Votación</a></span>
+                                                                                        <span class="fs-12 ta-c"><a class="text-black-light show_votacion" href="#" data-toggle="modal" data-target="#votacion_ordenanza" data-modaltitle="<?php echo get_the_title(); ?>" data-partidosinfo='<?php echo json_encode($partidos_info); ?>'>Ver Votación</a></span>
                                                                                 <?php }
                                                                                 } ?>
                                                                             </div>
@@ -554,8 +462,15 @@ $iniciativa_tipo = array(
             <div class="modal-body">
                 <div id="chartdiv"></div>
                 <div class="w-100 d-flex justify-content-center">
-                    <button type="button" class="btn btn-secondary rounded-0">Excel <i class="fas fa-download"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button type="button" class="btn btn-secondary rounded-0">CSV <i class="fas fa-download"></i></button>
+                    <div class="btn-oda excel-ranking">
+                        <span class="button-name">Excel</span>
+                        <span class="button-icon"><i class="fas fa-download"></i></span>
+                    </div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="btn-oda csv-ranking">
+                        <span class="button-name">CSV</span>
+                        <span class="button-icon"><i class="fas fa-download"></i></span>
+                    </div>
                 </div>
             </div>
         </div>
