@@ -7,7 +7,8 @@ $city_primary_color = get_post_meta($item->ID, 'oda_ciudad_color', true);
 
 $circunscripciones = get_circunscripciones_ciudad($item->ID);
 $comisiones = get_comisiones_ciudad($item->ID);
-$org_politicas = get_organizaciones_politicas();
+//$org_politicas = get_organizaciones_politicas();
+$org_politicas = get_organizaciones_politicas_ciudad($item->ID);
 
 ?>
 <style>
@@ -39,7 +40,14 @@ $org_politicas = get_organizaciones_politicas();
                         <div class="dismis-modals" data-dismiss="modal"><i class="far fa-times-circle text-blue-main"></i></div>
                         <div class="modal-body">
                             <div class="row">
-                                <img class="img-fluid" src="http://placehold.it/600x350?text=Manual%20para%20Filtros">
+                                <?php
+                                    $image_url = 'http://placehold.it/800x600?text=Manual';
+                                    $imagen_popup = get_post_meta($item->ID, 'oda_ciudad_popupinfo_listado_miembros', true);
+                                    if($imagen_popup){
+                                        $image_url = $imagen_popup;
+                                    }
+                                ?>
+                                <img class="img-fluid" src="<?php echo $image_url; ?>">
                             </div>
                         </div>
                     </div>
@@ -67,7 +75,7 @@ $org_politicas = get_organizaciones_politicas();
                                             </h5>
                                         </div>
 
-                                        <div id="circunscripcionc" class="collapse" aria-labelledby="circunscripcionh" data-parent="#circunscripcion">
+                                        <div id="circunscripcionc" class="collapse no-scroll" aria-labelledby="circunscripcionh" data-parent="#circunscripcion">
                                             <div class="card-body">
                                                 <?php while ($circunscripciones->have_posts()) {
                                                     $circunscripciones->the_post(); ?>
@@ -99,7 +107,7 @@ $org_politicas = get_organizaciones_politicas();
                                         </h5>
                                     </div>
 
-                                    <div id="generoc" class="collapse" aria-labelledby="generoh" data-parent="#genero">
+                                    <div id="generoc" class="collapse no-scroll" aria-labelledby="generoh" data-parent="#genero">
                                         <div class="card-body">                                            
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="genero" id="genero_1" value="genero-1">
@@ -191,17 +199,24 @@ $org_politicas = get_organizaciones_politicas();
             </div>
         </div>
         <div class="col-md-8 offset-md-1">
-            <!--
-            <div class="row">
-                <div class="col-sm-12 text-right">
-                    <ul class="export-button-list list-no-style d-flex">
-                        <li>Ver lista</li>
-                        <li>Excel</li>
-                        <li>CSV</li>
-                    </ul>
+            <div class="row my-3">
+                <div class="col-sm-12 col-lg-6 offset-lg-6 text-right">
+                    <a class="ver-listado" href="<?php echo home_url('/ciudad/' . $item->post_name . '/ver-listado-de-miembros-de-concejo/'); ?>" target="_blank">
+                    <div class="btn-oda view-ranking" data-doc="pdf_consolidado">
+                        <span class="button-name">Ver lista</span>
+                        <span class="button-icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    </a>
+                    <div class="btn-oda excel-ranking" data-doc="excel_consolidado">
+                        <span class="button-name">Excel</span>
+                        <span class="button-icon"><i class="fas fa-download"></i></span>
+                    </div>
+                    <div class="btn-oda csv-ranking" data-doc="csv_consolidado">
+                        <span class="button-name">CSV</span>
+                        <span class="button-icon"><i class="fas fa-download"></i></span>
+                    </div>
                 </div>
             </div>
-            -->
             <div class="row">
                 <div class="col-sm-12">
                     <?php
@@ -249,7 +264,7 @@ $org_politicas = get_organizaciones_politicas();
                             $partido_politico_logo = get_the_post_thumbnail_url($org_politica);
 
                             // Filters
-                            $classes[] = 'organizacion-' . $org_politica;
+                            $classes[] = 'org-' . $org_politica;
                             $classes[] = 'circunscripcion-' . $circunscripcion;
                             $classes[] = 'genero-' . $genero;
 
@@ -275,17 +290,17 @@ $org_politicas = get_organizaciones_politicas();
                                     $demas = get_post_meta(get_the_ID(), 'oda_comision_composicion_miembros', true);
                                     //echo $member_id . ' - ' . $presidente . ' - ' .get_the_ID() .'<br />';
                                     if ($presidente == $member_id) {
-                                        $classes[] = 'comision-' . get_the_ID();
+                                        $classes[] = 'com-' . get_the_ID();
                                         continue;
                                     }
                                     if ($videpresidente == $member_id) {
-                                        $classes[] = 'comision-' . get_the_ID();
+                                        $classes[] = 'com-' . get_the_ID();
                                         continue;
                                     }
                                     if ($demas) {
                                         foreach ($demas as $otro) {
                                             if ($otro == $member_id) {
-                                                $classes[] = 'comision-' . get_the_ID();
+                                                $classes[] = 'com-' . get_the_ID();
                                             }
                                         }
                                     }
@@ -427,12 +442,19 @@ $org_politicas = get_organizaciones_politicas();
                                 </div>
                 </div>
             </div>
+            <div class="row mt-3">
+                <div class="col-sm-12">
+                    <p><?php echo '<p>' . DESCARGOS['periodo'] . '</p>'; ?></p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 <?php get_footer(); ?>
 <script>
     $(document).ready(function() {
+        var cityid = <?php echo $item->ID; ?>;
+        var citiName = '<?php echo $item->post_title; ?>';
         $('#city_filters').change(function(e) {
             console.log($('form').serialize());
             var results = 0;
@@ -477,23 +499,86 @@ $org_politicas = get_organizaciones_politicas();
             $('.member-container').removeClass('deactivated');
             $('.member-container').removeClass('activated');
         })
+        /*
         $('.clean-radio').click(function(){
             target = $(this).data('radio');
             $('input[name="'+target+'"]').prop('checked', false);
             $('#city_filters').change();
         })
-    })
+        */
+        // Clic en EXCEL
+        $('.excel-ranking').click( function(){
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_consolidado_miembros_xls',                    
+                    city: cityid,
+                    cityname:citiName
+                },
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    var $a = $("<a>");
+                    $a.attr("href",data.file);
+                    $("body").append($a);
+                    $a.attr("download","OC_listado_miembros_concejo_municipal_"+citiName+".xls");
+                    $a[0].click();
+                    $a.remove();                   
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
 
-    function expandAll() {
-        console.log('click');
-        if ($('#expand_text').text() == 'Expandir') {
-            $('#expand_text').text('Contraer')
-        } else {
-            $('#expand_text').text('Expandir')
-        }
-        $('#circunscripcion .btn').click();
-        $('#genero .btn').click();
-        $('#organizacion .btn').click();
-        $('#comision .btn').click();
-    }
+            })
+
+        })
+        // Clic en CSV 
+        $('.csv-ranking').click( function(){
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_csv_consolidado_miembros',
+                    city: cityid,
+                },
+                
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    
+                    
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'OC_listado_miembros_concejo_municipal_'+citiName+'.csv';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    
+                    
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+
+
+    })
 </script>

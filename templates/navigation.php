@@ -150,7 +150,12 @@ $oculta_soltransp       = get_post_meta($current_city, 'oda_ciudad_ocula_solicit
         left: 100%;
         padding: 0;
     }
-
+	@media only screen and (max-width: 768px){
+        .sub-menu-side {
+            top: 45px;
+            left: 0;
+        }
+    }
     .is-dropdown:hover .sub-menu-side {
         display: block;
     }
@@ -305,15 +310,14 @@ $oculta_soltransp       = get_post_meta($current_city, 'oda_ciudad_ocula_solicit
                         $image = ($imagen_meta) ? $imagen_meta : $image;
                         $tuit = ($tuit_meta) ? $tuit_meta : '';
                     ?>
-                    <div class="col-sm-12 mb-3 text-center">
+                    <div class="col-sm-12 mb-0 text-center">
                         <img src="<?php echo $image; ?>" class="img-fluid">
                     </div>
-                    <div class="col-sm-12 text-center mt-3">
+                    <div class="col-sm-12 text-center mt-0">
                         <?php if($tuit){ ?>
                         <a href="https://twitter.com/intent/tweet?text=<?php echo $tuit; ?>" style="text-decoration: none;">
                             <span class="twitter-circle-icon"><i class="fab fa-twitter text-white fs-20"></i></span>
                         </a>
-                        <br />
                         <p>¡Envía un Tweet a tu Concejo!</p>
                         <?php } ?>
                     </div>
@@ -336,15 +340,14 @@ $oculta_soltransp       = get_post_meta($current_city, 'oda_ciudad_ocula_solicit
                         $image = ($imagen_meta) ? $imagen_meta : $image;
                         $tuit = ($tuit_meta) ? $tuit_meta : '';
                     ?>
-                    <div class="col-sm-12 mb-3 text-center">
+                    <div class="col-sm-12 mb-0 text-center">
                         <img src="<?php echo $image; ?>" class="img-fluid">
                     </div>
-                    <div class="col-sm-12 text-center mt-3">
+                    <div class="col-sm-12 text-center mt-0">
                         <?php if($tuit){ ?>
                         <a href="https://twitter.com/intent/tweet?text=<?php echo $tuit; ?>" style="text-decoration: none;">
                             <span class="twitter-circle-icon"><i class="fab fa-twitter text-white fs-20"></i></span>
                         </a>
-                        <br />
                         <p>¡Envía un Tweet a tu Concejo!</p>
                         <?php } ?>
                     </div>
@@ -367,15 +370,14 @@ $oculta_soltransp       = get_post_meta($current_city, 'oda_ciudad_ocula_solicit
                         $image = ($imagen_meta) ? $imagen_meta : $image;
                         $tuit = ($tuit_meta) ? $tuit_meta : '';
                     ?>
-                    <div class="col-sm-12 mb-3 text-center">
+                    <div class="col-sm-12 mb-0 text-center">
                         <img src="<?php echo $image; ?>" class="img-fluid">
                     </div>
-                    <div class="col-sm-12 text-center mt-3">
+                    <div class="col-sm-12 text-center mt-0">
                         <?php if($tuit){ ?>
                         <a href="https://twitter.com/intent/tweet?text=<?php echo $tuit; ?>" style="text-decoration: none;">
                             <span class="twitter-circle-icon"><i class="fab fa-twitter text-white fs-20"></i></span>
                         </a>
-                        <br />
                         <p>¡Envía un Tweet a tu Concejo!</p>
                         <?php } ?>
                     </div>
@@ -398,15 +400,14 @@ $oculta_soltransp       = get_post_meta($current_city, 'oda_ciudad_ocula_solicit
                         $image = ($imagen_meta) ? $imagen_meta : $image;
                         $tuit = ($tuit_meta) ? $tuit_meta : '';
                     ?>
-                    <div class="col-sm-12 mb-3 text-center">
+                    <div class="col-sm-12 mb-0 text-center">
                         <img src="<?php echo $image; ?>" class="img-fluid">
                     </div>
-                    <div class="col-sm-12 text-center mt-3">
+                    <div class="col-sm-12 text-center mt-0">
                         <?php if($tuit){ ?>
                         <a href="https://twitter.com/intent/tweet?text=<?php echo $tuit; ?>" style="text-decoration: none;">
                             <span class="twitter-circle-icon"><i class="fab fa-twitter text-white fs-20"></i></span>
                         </a>
-                        <br />
                         <p>¡Envía un Tweet a tu Concejo!</p>
                         <?php } ?>
                     </div>

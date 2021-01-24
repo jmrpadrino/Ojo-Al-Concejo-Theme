@@ -6,9 +6,11 @@ $item = get_page_by_path($ciudad, OBJECT, 'ciudad');
 $city_primary_color = get_post_meta($item->ID, 'oda_ciudad_color', true);
 
 
-$org_politicas          = get_organizaciones_politicas();
+//$org_politicas          = get_organizaciones_politicas();
+$org_politicas          = get_organizaciones_politicas_ciudad($item->ID);
 $comisiones_city        = get_comisiones_ciudad($item->ID);
 $documentos             = get_ordenanzas_ciudad($item->ID);
+$miembros_ciudad        = get_miembro_ciudad($item->ID);
 $fases_ciudad           = get_post_meta($item->ID, 'oda_ciudad_fase', true);
 $temas_ciudad           = get_temas_documento_ciudad($item->ID, 'tema_ordenanza');
 
@@ -18,6 +20,8 @@ $iniciativa_tipo = array(
     'comisiones'    => 'Comisiones',
     'ciudadania'    => 'Ciudadanía',
 );
+
+//var_dump($miembros_ciudad);
 
 ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -48,7 +52,7 @@ $iniciativa_tipo = array(
             <div class="col-12 col-lg-3">
                 <div class="row">
                     <div class="col">
-                        <h1 class="fs-20 bold">Observaciones a proyectos de ordenanzas</h1>
+                        <h1 class="fs-18 bold">Observaciones a proyectos de ordenanzas</h1>
                         <p>Búsqueda fácil según el título del documento o el nombre del proponente.</p>
                     </div>
                 </div>
@@ -126,6 +130,39 @@ $iniciativa_tipo = array(
                                     </div>
                                 <?php } // END Org Politicas 
                                 ?>
+                                <?php /* if ($miembros_ciudad) { ?>
+                                    <div id="status">
+                                        <div class="card">
+                                            <div class="card-header" id="statush">
+                                                <h5 class="mb-0">
+                                                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#statusc" aria-expanded="false" aria-controls="statusc">
+                                                        <div class="row">
+                                                            <div class="col-10 col-sm-10 text-left fs-14">Proponente</div>
+                                                            <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
+                                                        </div>
+                                                    </button>
+                                                </h5>
+                                            </div>
+
+                                            <div id="statusc" class="collapse" aria-labelledby="statush" data-parent="#status">
+                                                <div class="card-body">
+                                                <?php while ($miembros_ciudad->have_posts()) {
+                                                        $miembros_ciudad->the_post(); ?>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="temas" id="t_<?php echo get_the_ID(); ?>" value="t-<?php echo get_the_ID(); ?>">
+                                                            <label class="form-check-label" for="t_<?php echo get_the_ID(); ?>">
+                                                                <?php echo get_the_title(); ?>
+                                                            </label>
+                                                        </div>
+                                                    <?php } // End While org politicas 
+                                                    ?>
+                                                    <p class="ta-r bold"><span class="clean-radio" data-radio="status">Desactivar filtro</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } // END Statuses */
+                                ?>
                                 <?php if ($org_politicas->have_posts()) { ?>
                                     <div id="organizacion">
                                         <div class="card">
@@ -192,38 +229,7 @@ $iniciativa_tipo = array(
                                     </div>
                                 <?php } // END comisiones 
                                 ?>
-                                <?php if (ORDENANZA_STATUS) { ?>
-                                    <div id="status">
-                                        <div class="card">
-                                            <div class="card-header" id="statush">
-                                                <h5 class="mb-0">
-                                                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#statusc" aria-expanded="false" aria-controls="statusc">
-                                                        <div class="row">
-                                                            <div class="col-10 col-sm-10 text-left fs-14">Estado del trámite</div>
-                                                            <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
-                                                        </div>
-                                                    </button>
-                                                </h5>
-                                            </div>
-
-                                            <div id="statusc" class="collapse" aria-labelledby="statush" data-parent="#status">
-                                                <div class="card-body">
-                                                    <?php foreach (ORDENANZA_STATUS as $index => $status) { ?>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="status" id="status_<?php echo $index; ?>" value="s-<?php echo $index; ?>">
-                                                            <label class="form-check-label" for="status_<?php echo $index; ?>">
-                                                                <?php echo $status; ?>
-                                                            </label>
-                                                        </div>
-                                                    <?php } // End While org politicas 
-                                                    ?>
-                                                    <p class="ta-r bold"><span class="clean-radio" data-radio="status">Desactivar filtro</span></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } // END Statuses 
-                                ?>
+                                <!--
                                 <div id="fecha">
                                     <div class="card">
                                         <div class="card-header" id="fechah">
@@ -251,13 +257,11 @@ $iniciativa_tipo = array(
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <br />
-                                                <p><strong>Nota:</strong> use ambos elementos para buscar en un rango de fechas</p>
-                                                <p class="ta-r bold"><span class="clean-radio" data-radio="fecha">Desactivar filtro</span></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                -->
                             </div>
                         </div>
                         <div class="row filter-box-footer">
@@ -268,29 +272,40 @@ $iniciativa_tipo = array(
                 </div>
             </div>
             <div class="col-12 col-lg-9 pl-5">
-                <h2 class="fs-16">Listado</h2>
-                <?php if ($documentos->have_posts()) { ?>
-                    <?php if ($documentos->post_count > 10) { ?>
-                        <hr />
-                        <div class="row">
-                            <div class="col">
-                                <ul class="list-no-style d-flex justify-content-end pagination-list">
-                                    <li><a href="#">1</a></li>
-                                    <li>-</li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-chevron-right"></i></a></li>
-                                </ul>
-                            </div>
+                <div class="row my-3">
+                    <div class="col-sm-12 col-lg-6 offset-lg-6 text-right">
+                        <div class="btn-oda excel-ranking">
+                            <span class="button-name">Excel</span>
+                            <span class="button-icon"><i class="fas fa-download"></i></span>
                         </div>
-                    <?php } ?>
+                        <div class="btn-oda csv-ranking">
+                            <span class="button-name">CSV</span>
+                            <span class="button-icon"><i class="fas fa-download"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="fs-16">Listado</h2>
+                <?php if ($documentos->have_posts()) { ?>                    
+                    <div class="row oc-paginator d-none">
+                        <div class="col">
+                            <hr />
+                            <ul class="list-no-style d-flex justify-content-end pagination-list" data-maxgroup="0">
+                                <li id="pag_indicator">1</li>
+                                <li>-</li>
+                                <li><span id="maxgroup">0</span></li>
+                                <li class="paginate-link page-prev-alt" title="Anterior"><i class="fa fa-chevron-left"></i></li>
+                                <li class="paginate-link page-next-alt" title="Siguiente"><i class="fa fa-chevron-right"></i></li>
+                            </ul>
+                        </div>
+                    </div>                       
                     <div class="row mt-1">
                         <div class="col-12">
-                            <div class="accordion listado-documentos" id="listadodocumentos">
+                            <div class="accordion listado-documentos no-paginator" id="listadodocumentos">
                                 <?php
                                 $counter = 0;
                                 while ($documentos->have_posts()) {
                                     $documentos->the_post();
+                                    $comision_ID = get_the_ID();
                                     $comision = '';
                                     $comision = get_post_meta(get_the_ID(), 'oda_ordenanza_comision', true);
                                     $proponente = get_post_meta(get_the_ID(), 'oda_ordenanza_proponente', true);
@@ -299,114 +314,101 @@ $iniciativa_tipo = array(
                                     $partidos_documento = get_partido_politico_documento(get_the_ID(), 'ordenanza');
                                     $fecha_documento = get_post_meta(get_the_ID(), 'oda_ordenanza_fecha', true);
                                     $tema_documento = get_post_meta(get_the_ID(), 'oda_ordenanza_incidencia_temas', true);
+                                    $args = array(
+                                        'post_type' => 'observacion',
+                                        'posts_per_page' => -1,
+                                        'meta_query' => array(
+                                            array(
+                                                'key' => 'oda_observacion_ordenanza',
+                                                'value' => get_the_ID(),
+                                                'compare' => '='
+                                            )
+                                        )
+                                    );
+                                    $orbservaciones = new WP_Query($args);
+                                    if ($orbservaciones->have_posts()) {
                                 ?>
-                                    <div class="card documento<?php
-                                                                echo ($comision) ? ' com-' . $comision . '' : '';
-                                                                echo ($estado) ? ' s-' . $estado . '' : '';
-                                                                echo ($tema_documento) ? ' t-' . $tema_documento . '' : '';
-                                                                if ($partidos_documento) {
-                                                                    foreach ($partidos_documento as $partido_documento) {
-                                                                        echo ' org-' . $partido_documento;
-                                                                    }
+                                <div class="card documento<?php
+                                                            echo ($comision) ? ' com-' . $comision . '' : '';
+                                                            echo ($estado) ? ' s-' . $estado . '' : '';
+                                                            echo ($tema_documento) ? ' t-' . $tema_documento . '' : '';
+                                                            if ($partidos_documento) {
+                                                                foreach ($partidos_documento as $partido_documento) {
+                                                                    echo ' org-' . $partido_documento;
                                                                 }
-                                                                ?>" data-date="<?php echo ($fecha_documento) ? date('U', strtotime($fecha_documento)) : ''; ?>">
-                                        <div class="card-header" id="heading-<?php echo get_the_ID(); ?>">
-                                            <h2 class="mb-0 fs-16 lh-1 hover-underlined">
-                                                <a class="text-left text-black-light collapsed cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo get_the_ID(); ?>" aria-expanded="false" aria-controls="collapse-<?php echo get_the_ID(); ?>">
-                                                    <span class="documento-title"><?php echo get_the_title(); ?></span>
-                                                </a>
-                                            </h2>
-                                            <?php
-                                            if ($proponente) {
-                                            ?>
-                                                <div class="w-100 d-flex justify-content-between align-items-center">
-                                                    <span><strong>Proponente:</strong> <i><?php echo $proponente; ?></i></span>
-                                                <?php } else { ?>
-                                                    <div class="w-100 d-flex justify-content-end align-items-center">
-                                                    <?php } ?>
-                                                    <a class="bold cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo get_the_ID(); ?>" aria-expanded="false" aria-controls="collapse-<?php echo get_the_ID(); ?>">(Ver más)</a>
-                                                    </div>
-                                                </div>
-                                                <div id="collapse-<?php echo get_the_ID(); ?>" class="collapse" aria-labelledby="heading-<?php echo get_the_ID(); ?>" data-parent="#listadodocumentos">
-                                                    <div class="card-body">
-                                                        <div class="row">
-                                                                <?php
-                                                                // obtener las observaciones de esta ordenanzas
-                                                                $args = array(
-                                                                    'post_type' => 'observacion',
-                                                                    'posts_per_page' => -1,
-                                                                    'meta_query' => array(
-                                                                        array(
-                                                                            'key' => 'oda_observacion_ordenanza',
-                                                                            'value' => get_the_ID(),
-                                                                            'compare' => '='
-                                                                        )
-                                                                    )
-                                                                );
-                                                                $orbservaciones = new WP_Query($args);
-                                                                if ($orbservaciones->have_posts()) {
-                                                                ?>
-                                                                <div class="col-md-8 offset-md-2">
-                                                                    <table class="table table-bordered">
-                                                                        <thead class="thead-light">
-                                                                            <tr>
-                                                                                <th class="align-middle" style="text-align:center; line-height:1" scope="col">Proponente</th>
-                                                                                <th class="align-middle" style="text-align:center; line-height:1" scope="col">Observación</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        <?php
-                                                                        while ($orbservaciones->have_posts()) {
-                                                                            $orbservaciones->the_post();
-                                                                            $proponente = get_post_meta(get_the_ID(), 'oda_observacion_miembro', true);
-                                                                            $documento_obs = get_post_meta(get_the_ID(), 'oda_observacion_documento', true);
-                                                                            echo '<tr>';
-                                                                            echo '<td class="align-middle" style="text-align:center; line-height:1">' . get_the_title($proponente). '</td>';
-                                                                            echo '<td class="align-middle" style="text-align:center; line-height:1">';
-                                                                            if ($documento_obs){
-                                                                            ?>
-                                                                            <a class="link-btn" href="<?php echo $documento_obs; ?>" target="_blank">
-                                                                            <div class="btn-oda view-ranking">
-                                                                                <span class="button-name">Ver</span>
-                                                                                <span class="button-icon"><i class="fas fa-chevron-down"></i></span>
-                                                                            </div>
-                                                                            </a>
-                                                                            <a class="link-btn" href="<?php echo $documento_obs; ?>" download>
-                                                                            <div class="btn-oda excel-ranking">
-                                                                                <span class="button-name">Descargar</span>
-                                                                                <span class="button-icon"><i class="fas fa-download"></i></span>
-                                                                            </div>
-                                                                            </a>
-                                                                            <?php 
-                                                                            }
-                                                                            echo '</td>';
-                                                                            echo '</tr>';
-                                                                        }
-                                                                        ?>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                                <?php
-                                                                } else {
-                                                                ?>
-                                                                <div class="col-md-12">
-                                                                    <p>Esta ordenanza no tiene observaciones</p>
-                                                                </div>
-                                                                <?php } ?>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                            }
+                                                            ?>" data-date="<?php echo ($fecha_documento) ? date('U', strtotime($fecha_documento)) : ''; ?>">
+                                    <div class="card-header px-0" id="heading-<?php echo $comision_ID; ?>">
+                                        <h2 class="mb-0 fs-16 lh-1 hover-underlined">
+                                            <a class="text-left text-black-light collapsed cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo $comision_ID; ?>" aria-expanded="false" aria-controls="collapse-<?php echo $comision_ID; ?>">
+                                                <span class="documento-title"><?php echo get_the_title($comision_ID); ?></span>
+                                            </a>
+                                        </h2>
+                                        <?php  if ($proponente) { ?>
+                                        <div class="w-100 d-flex justify-content-between align-items-center">
+                                            <span><strong>Proponente:</strong> <i><?php echo $proponente; ?></i></span>
+                                        <?php } else { ?>
+                                        <div class="w-100 d-flex justify-content-end align-items-center">
+                                        <?php } ?>
+                                            <a class="bold cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo $comision_ID; ?>" aria-expanded="false" aria-controls="collapse-<?php echo $comision_ID; ?>">(Ver más)</a>
                                         </div>
-                                    <?php $counter++;
-                                } // END While 
-                                    ?>
                                     </div>
+                                    <div id="collapse-<?php echo $comision_ID; ?>" class="collapse" aria-labelledby="heading-<?php echo $comision_ID; ?>" data-parent="#listadodocumentos">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-8 offset-md-2">
+                                                    <table class="table table-bordered">
+                                                        <thead class="thead-light">
+                                                            <tr>
+                                                                <th class="align-middle" style="text-align:center; line-height:1" scope="col">Proponente</th>
+                                                                <th class="align-middle" style="text-align:center; line-height:1" scope="col">Observación</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php
+                                                                while ($orbservaciones->have_posts()) {
+                                                                    $orbservaciones->the_post();
+                                                                    $proponente = get_post_meta(get_the_ID(), 'oda_observacion_miembro', true);
+                                                                    $documento_obs = get_post_meta(get_the_ID(), 'oda_observacion_documento', true);
+                                                                    echo '<tr>';
+                                                                    echo '<td class="align-middle" style="text-align:center; line-height:1">' . get_the_title($proponente). '</td>';
+                                                                    echo '<td class="align-middle" style="text-align:center; line-height:1">';
+                                                                    if ($documento_obs){
+                                                                    ?>
+                                                                    <a class="link-btn" href="<?php echo $documento_obs; ?>" target="_blank">
+                                                                    <div class="btn-oda view-ranking">
+                                                                        <span class="button-name">Ver</span>
+                                                                        <span class="button-icon"><i class="fas fa-chevron-down"></i></span>
+                                                                    </div>
+                                                                    </a>
+                                                                    <a class="link-btn" href="<?php echo $documento_obs; ?>" download>
+                                                                    <div class="btn-oda excel-ranking">
+                                                                        <span class="button-name">Descargar</span>
+                                                                        <span class="button-icon"><i class="fas fa-download"></i></span>
+                                                                    </div>
+                                                                    </a>
+                                                                    <?php 
+                                                                    }
+                                                                    echo '</td>';
+                                                                    echo '</tr>';
+                                                                } //E END While Observacione
+                                                            ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } //End IF Observaciones ?>
+                                <?php $counter++; } // END While ?>
                             </div>
                         </div>
-                    <?php } else { ?>
-                        <p class="text-warning">No existen proyectos de ordenanza registrados en este Concejo Municipal</p>
-                    <?php } ?>
                     </div>
+                <?php } else { ?>
+                    <p class="text-warning">No existen proyectos de ordenanza registrados en este Concejo Municipal</p>
+                <?php } ?>
+                </div>
             </div>
         </div>
 </section>
@@ -433,5 +435,127 @@ $iniciativa_tipo = array(
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
+    $(document).ready(function() {
+        // Paginacion
+        var paginaDoc = 1;
+        var groups = 0;
+        var maxelements = 8;
+        var maxgroup = 0;
+        var elementos = $('.listado-documentos .card');
+        $('.listado-documentos .card').addClass('group');
+        if (elementos.length > maxelements){
+            $('.oc-paginator').removeClass('d-none');
+            $.each(elementos, function(i,v) {
+                if(i % maxelements == 0){
+                    groups++;
+                }
+                $(this).addClass('group-' + groups);
+                if(groups > 1){
+                    $(this).hide();
+                }
+                console.log(groups);
+            })
+            $('#maxgroup').html(groups);
+        }
 
+        // Botones paginacion listados
+        $('.page-next-alt').click( function(){
+            if (paginaDoc < groups){
+                paginaDoc++;
+                $('.card.group').hide();
+                $('.card.group-' + paginaDoc).show();
+                $('#pag_indicator').html(paginaDoc);
+                console.log(paginaDoc);
+            }
+        })
+        
+        $('.page-prev-alt').click( function(){
+            if (paginaDoc <= groups){
+                console.log(paginaDoc);
+                if (paginaDoc != 1){
+                    paginaDoc--;
+                    $('.card.group').hide();
+                    $('.card.group-' + paginaDoc).show();
+                    $('#pag_indicator').html(paginaDoc);
+                    console.log(paginaDoc);
+                }
+            }
+        })
+
+
+
+        var cityid = <?php echo $item->ID; ?>;
+        var citiName = '<?php echo $item->post_title; ?>';
+        // Clic en EXCEL
+        $('.excel-ranking').click( function(){            
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_observaciones_xls',
+                    city: cityid,
+                    cityname:citiName
+                },
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    var $a = $("<a>");
+                    $a.attr("href",data.file);
+                    $("body").append($a);
+                    $a.attr("download","OC_observaciones_proyectos_ordenanzas_concejo_municipal_"+citiName+".xls");
+                    $a[0].click();
+                    $a.remove();                   
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+        // Clic en CSV 
+        $('.csv-ranking').click( function(){
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_csv_observaciones',
+                    city: cityid
+                },
+                
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'OC_observaciones_proyectos_ordenanzas_concejo_municipal_'+citiName+'.csv';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+    })
+    
 </script>

@@ -9,6 +9,17 @@ define( 'THEME_PREFIX', 'oda_' );
 define( 'PERIOD_BEGINS', '2019-05-14');
 
 /**
+ * Notas de descargo
+ */
+$descargos = array(
+    'periodo'       => get_option('descargo_periodo'),
+    'remitido'      => get_option('descargo_remitido'),
+    'votaciones'    => get_option('descargo_votaciones'),
+    'cuantitativo'  => get_option('descargo_cuantitativo')
+);
+define('DESCARGOS', $descargos);
+
+/**
  * Setup of scripts and dependencies
  */
 function ecopre($array, $die = false){

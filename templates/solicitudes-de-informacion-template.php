@@ -7,7 +7,8 @@ $city_primary_color = get_post_meta($item->ID, 'oda_ciudad_color', true);
 
 
 $comisiones             = get_comisiones_ciudad($item->ID);
-$org_politicas          = get_organizaciones_politicas();
+//$org_politicas          = get_organizaciones_politicas();
+$org_politicas          = get_organizaciones_politicas_ciudad($item->ID);
 $ordenanzas             = get_ordenanzas_ciudad($item->ID);
 
 $solicitudes = get_solicitudes_informacion($item->ID);
@@ -15,9 +16,15 @@ $solicitudes = get_solicitudes_informacion($item->ID);
 ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <style>
-    .info-sign-filters {
-        color: <?php echo $city_primary_color; ?>;
+    .info-sign-filters,
+    .city-bkg-color .fase-item-counter {
+        color: <?php echo $city_primary_color; ?> !important;
     }
+    .city-bkg-color .fase-item-thumbnail { 
+        border-color: <?php echo $city_primary_color; ?>;
+    }
+    .city-bkg-color .fase-separador:after,
+    .city-bkg-color .fase-separador { background: <?php echo $city_primary_color; ?>; }
 </style>
 <section class="main-container pt-4">
     <div class="container">
@@ -25,7 +32,7 @@ $solicitudes = get_solicitudes_informacion($item->ID);
             <div class="col-12 col-lg-3">
                 <div class="row">
                     <div class="col">
-                        <h1 class="fs-20 bold">Solicitudes de información y sus respuestas</h1>
+                        <h1 class="fs-18 bold">Solicitudes de información y sus respuestas</h1>
                         <p>Búsqueda fácil según el título del documento o el nombre del solicitante.</p>
                     </div>
                 </div>
@@ -73,7 +80,7 @@ $solicitudes = get_solicitudes_informacion($item->ID);
                                                 <h5 class="mb-0">
                                                     <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#organizacionc" aria-expanded="false" aria-controls="organizacionc">
                                                         <div class="row">
-                                                            <div class="col-10 col-sm-10 text-left fs-14">Organización Política</div>
+                                                            <div class="col-10 col-sm-10 text-left fs-12">Organización Política</div>
                                                             <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
                                                         </div>
                                                     </button>
@@ -99,36 +106,84 @@ $solicitudes = get_solicitudes_informacion($item->ID);
                                     </div>
                                 <?php } // END Org Politicas 
                                 ?>
-                                <div id="comision">
+                                <?php 
+                                    $instituciones = new WP_Query($args = array(
+                                        'post_type' => 'instituciones',
+                                        'posts_per_page' => -1,
+                                        'meta_query' => array(
+                                            array(
+                                                'key' => 'oda_ciudad_owner',
+                                                'value' => $item->ID,
+                                                'comprare' => '='
+                                            )
+                                        )
+                                    ));
+                                    if ($instituciones->have_posts()) { ?>
+                                    <div id="institucion">
+                                        <div class="card">
+                                            <div class="card-header" id="institucionh">
+                                                <h5 class="mb-0">
+                                                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#institucionc" aria-expanded="false" aria-controls="institucionc">
+                                                        <div class="row">
+                                                            <div class="col-10 col-sm-10 text-left fs-12">Información solicitada a</div>
+                                                            <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
+                                                        </div>
+                                                    </button>
+                                                </h5>
+                                            </div>
+
+                                            <div id="institucionc" class="collapse" aria-labelledby="institucionh" data-parent="#institucion">
+                                                <div class="card-body">
+                                                    <?php while ($instituciones->have_posts()) {
+                                                        $instituciones->the_post(); ?>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="institucion" id="ins_<?php echo get_the_ID(); ?>" value="ins-<?php echo get_the_ID(); ?>">
+                                                            <label class="form-check-label" for="ins_<?php echo get_the_ID(); ?>">
+                                                                <?php echo get_the_title(); ?>
+                                                            </label>
+                                                        </div>
+                                                    <?php } // End While org politicas 
+                                                    ?>
+                                                    <p class="ta-r bold"><span class="clean-radio" data-radio="institucion">Desactivar filtro</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } // END Org Politicas 
+                                ?>
+                                <div id="estado">
                                     <div class="card">
-                                        <div class="card-header" id="comisionh">
+                                        <div class="card-header" id="estadoh">
                                             <h5 class="mb-0">
-                                                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#comisionc" aria-expanded="false" aria-controls="comisionc">
+                                                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#estadoc" aria-expanded="false" aria-controls="estadoc">
                                                     <div class="row">
-                                                        <div class="col-10 col-sm-10 text-left fs-14">Comisión</div>
+                                                        <div class="col-10 col-sm-10 text-left fs-12">Estado</div>
                                                         <div class="col-2 col-sm-2 text-right"><i class="fas fa-chevron-down"></i></div>
-                                                        </d2>
+                                                    </div>
                                                 </button>
                                             </h5>
                                         </div>
 
-                                        <div id="comisionc" class="collapse" aria-labelledby="comisionh" data-parent="#comision">
+                                        <div id="estadoc" class="collapse" aria-labelledby="estadoh" data-parent="#estado">
                                             <div class="card-body">
-                                                <?php while ($comisiones->have_posts()) {
-                                                    $comisiones->the_post(); ?>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="comision" id="com_<?php echo get_the_ID(); ?>" value="com-<?php echo get_the_ID(); ?>">
-                                                        <label class="form-check-label" for="com_<?php echo get_the_ID(); ?>">
-                                                            <?php echo get_the_title(); ?>
-                                                        </label>
-                                                    </div>
-                                                <?php } // End While org politicas 
-                                                ?>
-                                                <p class="ta-r bold"><span class="clean-radio" data-radio="comision">Desactivar filtro</span></p>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="estado" id="est_1" value="est-1">
+                                                    <label class="form-check-label" for="est_1">
+                                                        Solicitud Presentada
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="estado" id="est_2" value="est-2">
+                                                    <label class="form-check-label" for="est_2">
+                                                        Respuesta
+                                                    </label>
+                                                </div>
+                                                <p class="ta-r bold"><span class="clean-radio" data-radio="estado">Desactivar filtro</span></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!--
                                 <div id="fecha">
                                     <div class="card">
                                         <div class="card-header" id="fechah">
@@ -144,14 +199,15 @@ $solicitudes = get_solicitudes_informacion($item->ID);
 
                                         <div id="fechac" class="collapse" aria-labelledby="comisionh" data-parent="#fecha">
                                             <div class="card-body">
-                                                <!--
+                                                
                                                 <input class="form-control" type="text" name="date_test" value="" />
-                                                -->
+                                            
                                                 <p class="ta-r bold"><span class="clean-radio" data-radio="comision">Desactivar filtro</span></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                -->
                             </div>
                         </div>
                         <div class="row filter-box-footer">
@@ -162,54 +218,176 @@ $solicitudes = get_solicitudes_informacion($item->ID);
                 </div>
             </div>
             <div class="col-12 col-lg-9 pl-5">
-                <h2 class="fs-16">Listado</h2>
-                <hr />
-                <?php if ($solicitudes->have_posts()) { ?>
-                    <div class="row">
-                        <div class="col">
-                            <ul class="list-no-style d-flex justify-content-end pagination-list">
-                                <li><a href="#">1</a></li>
-                                <li>-</li>
-                                <li><a href="#">4</a></li>
-                                <li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
-                                <li><a href="#"><i class="fa fa-chevron-right"></i></a></li>
-                            </ul>
+                <div class="row my-3">
+                    <div class="col-sm-12 col-lg-6 offset-lg-6 text-right">
+                        <div class="btn-oda excel-ranking">
+                            <span class="button-name">Excel</span>
+                            <span class="button-icon"><i class="fas fa-download"></i></span>
+                        </div>
+                        <div class="btn-oda csv-ranking">
+                            <span class="button-name">CSV</span>
+                            <span class="button-icon"><i class="fas fa-download"></i></span>
                         </div>
                     </div>
+                </div>
+                <h2 class="fs-16">Listado</h2>
+                <?php if ($solicitudes->have_posts()) { ?>
+                    <?php if ($solicitudes->post_count > 8) { ?>
+                        <hr />
+                        <div class="row">
+                            <div class="col">
+                                <ul class="list-no-style d-flex justify-content-end pagination-list" data-maxgroup="<?php echo ceil($solicitudes->post_count / 8); ?>">
+                                    <li id="pag_indicator">1</li>
+                                    <li>-</li>
+                                    <li><?php echo ceil($solicitudes->post_count / 8); ?></li>
+                                    <li class="paginate-link page-prev" title="Anterior"><i class="fa fa-chevron-left"></i></li>
+                                    <li class="paginate-link page-next" title="Siguiente"><i class="fa fa-chevron-right"></i></li>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php } ?>
                     <div class="row mt-1">
                         <div class="col-12">
                             <div class="accordion listado-documentos" id="listadoOrdenanzas">
                                 <?php
+                                $counter = 1;
+                                $grupo = 1;
                                 while ($solicitudes->have_posts()) {
                                     $solicitudes->the_post();
-                                    $comision = '';
-                                    $comision = get_post_meta(get_the_ID(), 'oda_ordenanza_comision', true);
+                                    $solicitante = get_post_meta(get_the_ID(), 'oda_solicitud_info_iniciativa', true);
+                                    $informacion_solicitada_a = get_post_meta(get_the_ID(), 'oda_solicitud_instituciones', true);
+                                    $estado = get_post_meta(get_the_ID(), 'oda_solicitud_info_estado', true);
+                                    $fecha = get_post_meta(get_the_ID(), 'oda_solicitud_info_vigencia', true);
+                                    $pdf_solicitud = get_post_meta(get_the_ID(), 'oda_solicitud_pdf', true);
+                                    $pdf_solicitud_fecha = get_post_meta(get_the_ID(), 'oda_solicitud_pdf_fecha', true);
+                                    $pdf_respuesta = get_post_meta(get_the_ID(), 'oda_respuesta_pdf', true);
+                                    $pdf_respuesta_fecha = get_post_meta(get_the_ID(), 'oda_respuesta_pdf_fecha', true);
 
+                                    switch($solicitante){
+                                        case 'alcalde': 
+                                            $alcalde = new WP_Query(array(
+                                                'post_type' => 'miembro',
+                                                'posts_per_page' => -1,
+                                                'meta_query' => array(
+                                                    'relation' => 'AND',
+                                                    array(
+                                                        'key' => 'oda_ciudad_owner',
+                                                        'value' => $item->ID,
+                                                        'compare' => '='
+                                                    ),
+                                                    array(
+                                                        'key' => 'oda_miembro_cargo',
+                                                        'value' => 1,
+                                                        'compare' => '='
+                                                    )
+                                                )
+                                            ));
+                                            $solicitante = $alcalde->posts[0]->post_title;
+                                            break;
+                                        case 'concejal': 
+                                            $concejal = get_post(get_post_meta(get_the_ID(), 'oda_solicitud_info_iniciativa_solicitante_concejal', true))->post_title;
+                                            $solicitante = $concejal;
+                                            break;
+                                        case 'comision': 
+                                            $comision = get_post(get_post_meta(get_the_ID(), 'oda_solicitud_info_iniciativa_solicitante_comision', true))->post_title;
+                                            $solicitante = $comision;
+                                            break;
+                                        case 'ciudadania': 
+                                            $ciudadano = get_post_meta(get_the_ID(), 'oda_solicitud_info_iniciativa_solicitante_ciudadania', true);
+                                            $solicitante = $ciudadano;
+                                            break;
+                                    }
                                 ?>
-                                    <div class="card com-<?php echo $comision; ?>">
-                                        <div class="card-header" id="heading-<?php echo get_the_ID(); ?>">
+                                    <div class="card group group-<?php echo $grupo; ?> <?php 
+                                                echo ($estado) ? ' est-'.$estado : ''; 
+                                                echo ($informacion_solicitada_a) ? ' ins-'.$informacion_solicitada_a : ''; 
+                                    ?>" data-fecha="<?php echo date('U', $fecha); ?>">
+                                        <div class="card-header px-0" id="heading-<?php echo get_the_ID(); ?>">
                                             <h2 class="mb-0 fs-16 lh-1 hover-underlined">
                                                 <a class="text-left text-black-light collapsed cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo get_the_ID(); ?>" aria-expanded="false" aria-controls="collapse-<?php echo get_the_ID(); ?>">
                                                     <?php echo get_the_title(); ?>
                                                 </a>
                                             </h2>
-                                            <div class="w-100 d-flex justify-content-between align-items-center">
-                                                <?php
-                                                    $proponente = get_post_meta(get_the_ID(), 'oda_ordenanza_proponente', true);
-                                                    if($proponente){
-                                                ?>
-                                                <span><strong>Proponente:</strong> <i><?php echo $proponente; ?></i></span>
-                                                <?php } ?>
+                                            <div class="w-100 d-flex justify-content-end align-items-end">
                                                 <a class="bold cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo get_the_ID(); ?>" aria-expanded="false" aria-controls="collapse-<?php echo get_the_ID(); ?>">(Ver más)</a>
                                             </div>
                                         </div>
                                         <div id="collapse-<?php echo get_the_ID(); ?>" class="collapse" aria-labelledby="heading-<?php echo get_the_ID(); ?>" data-parent="#listadoOrdenanzas">
                                             <div class="card-body">
-                                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                                <!-- Metas -->
+                                                <div class="row mb-4">
+                                                    <div class="col-sm-12">
+                                                        <ul class="list-no-style">
+                                                            <?php if ($solicitante) : ?>
+                                                                <li><strong>Solicitante:</strong> <?php echo $solicitante; ?></li>
+                                                            <?php endif ?>
+                                                            <?php if ($informacion_solicitada_a) : ?>
+                                                                <li><strong>Información solicitada a:</strong> <?php echo get_the_title($informacion_solicitada_a); ?></li>
+                                                            <?php endif ?>
+                                                            <?php if ($estado) :
+                                                                switch ($estado) {
+                                                                    case '1': $estado = 'Solicitud presentada'; break;
+                                                                    case '2': $estado = 'Respuesta'; break;
+                                                                }
+                                                            ?>
+                                                                <li><strong>Estado:</strong> <?php echo $estado; ?></li>
+                                                            <?php endif ?>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <!-- Fases -->
+                                                <div class="row">
+                                                    <?php
+                                                    $index = 0;
+                                                    echo '<div class="col-md-4"></div>';
+                                                    
+                                                    ?>
+                                                    <div class="col-md-2 fase-item-container">
+                                                        <div class="fase-item-counter-container city-bkg-color">
+                                                            <span class="fs-36 bold fase-item-counter">1</span>
+                                                            <div class="fase-item-thumbnail">
+                                                                <img class="img-fluid" src="https://www.flaticon.es/svg/static/icons/svg/702/702814.svg">
+                                                            </div>
+                                                            <div class="fase-separador first-separator"></div>
+                                                            <div class="ta-c mt-2">
+                                                                <span class="fs-14 bold ta-c">Solicitud presentada</span><br />
+                                                                <?php if ($pdf_solicitud_fecha) { ?>
+                                                                    <span class="fs-12 ta-c"><?php echo date('d/m/Y', strtotime($pdf_solicitud_fecha)); ?></span><br />
+                                                                <?php } ?>
+                                                                <?php if ($pdf_solicitud) { ?>
+                                                                    <span class="fs-12 ta-c"><a class="text-black-light" href="<?php echo $pdf_solicitud; ?>" target="_blank">Ver</a> - <a class="text-black-light" href="<?php echo $pdf_solicitud; ?>" download>Descargar</a></span>
+                                                                <?php } ?>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 fase-item-container">
+                                                        <div class="fase-item-counter-container">
+                                                            <span class="fs-36 bold fase-item-counter">2</span>
+                                                            <div class="fase-item-thumbnail">
+                                                                <img class="img-fluid" src="https://www.flaticon.com/svg/static/icons/svg/858/858171.svg">
+                                                            </div>
+                                                            <div class="fase-separador"></div>
+                                                            <div class="ta-c mt-2">
+                                                                <span class="fs-14 bold ta-c">Respuesta</span><br />
+                                                                <?php if ($pdf_respuesta_fecha) { ?>
+                                                                    <span class="fs-12 ta-c"><?php echo date('d/m/Y', strtotime($pdf_respuesta_fecha)); ?></span><br />
+                                                                <?php } ?>
+                                                                <?php if ($pdf_respuesta) { ?>
+                                                                    <span class="fs-12 ta-c"><a class="text-black-light" href="<?php echo $pdf_respuesta; ?>" target="_blank">Ver</a> - <a class="text-black-light" href="<?php echo $pdf_respuesta; ?>" download>Descargar</a></span>
+                                                                <?php } ?>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                <?php } // END While 
+                                <?php 
+                                    if($counter % 8 == 0){
+                                        $grupo++;
+                                    }
+                                    $counter++; 
+                                } // END While 
                                 ?>
                             </div>
                         </div>
@@ -276,6 +454,82 @@ $solicitudes = get_solicitudes_informacion($item->ID);
             $('input[name="'+target+'"]').prop('checked', false);
             $('#city_filters').change();
         })
+
+
+        var cityid = <?php echo $item->ID; ?>;
+        var citiName = '<?php echo $item->post_title; ?>';
+        // Clic en EXCEL
+        $('.excel-ranking').click( function(){            
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_listado_resoluciones_xls',
+                    city: cityid,
+                    cityname:citiName
+                },
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    var $a = $("<a>");
+                    $a.attr("href",data.file);
+                    $("body").append($a);
+                    $a.attr("download","OC_listado_resoluciones_concejo_municipal_"+citiName+".xls");
+                    $a[0].click();
+                    $a.remove();                   
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+        // Clic en CSV 
+        $('.csv-ranking').click( function(){
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_csv_listado_resoliciones',
+                    city: cityid
+                },
+                
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'OC_listado_resoluciones_concejo_municipal_'+citiName+'.csv';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+
+
     })
     
     function expandAll() {

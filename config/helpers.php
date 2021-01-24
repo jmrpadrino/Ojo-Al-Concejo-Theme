@@ -46,6 +46,41 @@ function get_organizaciones_politicas(){
     return $org_politicas;
 }
 
+// Organizaciones políticas
+function get_organizaciones_politicas_ciudad($ciudad = ''){
+    $args = array(
+        'post_type' => 'miembro',
+        'posts_per_page' => -1,
+        'meta_key' => 'oda_miembro_curul',
+        'orderby' => 'meta_value_num',
+        'order' => 'ASC',
+        'meta_query' => array(
+            array(
+                'key' => 'oda_ciudad_owner',
+                'value' => $ciudad,
+                'compare' => '=',
+            )
+        )
+    );
+    $miembros = new WP_Query($args);
+    if ($miembros->have_posts()) {
+        $listado_partidos = array();
+        while ($miembros->have_posts()) {
+            $miembros->the_post();
+            $member_id = get_the_ID();
+            $listado_partidos[] = get_post_meta($member_id, 'oda_partido_owner', true);
+        }
+    }
+    wp_reset_query();
+    $args = array(
+        'post_type' => 'partido',
+        'posts_per_page' => -1,
+        'post__in' => $listado_partidos
+    );
+    $org_politicas = new WP_Query($args);
+    return $org_politicas;
+}
+
 // Circunscripciones por ciudad
 function get_circunscripciones_ciudad($city_id = ''){
     $args = array(
@@ -71,6 +106,50 @@ function get_ordenanzas_ciudad($city_id = ''){
             array(
                 'key' => 'oda_ciudad_owner',
                 'value' => $city_id,
+                'compare' => '=',
+            )
+        )
+    );
+    return new WP_Query($args);
+}
+
+// Ordenanzas por ciudad
+function get_ordenanzas_ciudad_tipomiembro($city_id = '', $tipo = 'alcalde'){
+    $args = array(
+        'post_type' => 'ordenanza',
+        'posts_per_page' => -1,
+        'meta_query' => array(
+            'relation' => 'AND',
+            array(
+                'key' => 'oda_ciudad_owner',
+                'value' => $city_id,
+                'compare' => '=',
+            ),
+            array(
+                'key' => 'oda_ordenanza_iniciativa',
+                'value' => $tipo,
+                'compare' => '=',
+            )
+        )
+    );
+    return new WP_Query($args);
+}
+
+// Ordenanzas por ciudad
+function get_ordenanzas_ciudad_aprobadas($city_id = ''){
+    $args = array(
+        'post_type' => 'ordenanza',
+        'posts_per_page' => -1,
+        'meta_query' => array(
+            'relation' => 'AND',
+            array(
+                'key' => 'oda_ciudad_owner',
+                'value' => $city_id,
+                'compare' => '=',
+            ),
+            array(
+                'key' => 'oda_ordenanza_estado',
+                'value' => 6,
                 'compare' => '=',
             )
         )
@@ -156,7 +235,7 @@ function mocion_votacion_fase_aprobacion($ord_id = '', $fase_index = '', $partid
             }
 
         };
-
+        $mocion_index['mocion_id'] = $mocion_id;
         $votos_si['voto'] = 'Afirmativos ('. number_format(($si*100) / $total,2) .'%)';
         $votos_no['voto'] = 'Negativos ('. number_format(($no*100) / $total,2) .'%)';
         $votos_ab['voto'] = 'Abstenciones ('. number_format(($ab*100) / $total,2) .'%)';
@@ -169,6 +248,7 @@ function mocion_votacion_fase_aprobacion($ord_id = '', $fase_index = '', $partid
         ); */
 
         $votos = array(
+            $mocion_index,
             $votos_si,
             $votos_no,
             $votos_ab,
@@ -251,6 +331,28 @@ function get_resoluciones_ciudad($city_id = ''){
     return new WP_Query($args);
 }
 
+// Resoluciones por ciudad
+function get_resoluciones_ciudad_aprobadas($city_id = ''){
+    $args = array(
+        'post_type' => 'resolucion',
+        'posts_per_page' => -1,
+        'meta_query' => array(
+            'relation' => 'AND',
+            array(
+                'key' => 'oda_ciudad_owner',
+                'value' => $city_id,
+                'compare' => '=',
+            ),
+            array(
+                'key' => 'oda_resolucion_estado',
+                'value' => 3,
+                'compare' => '=',
+            )
+        )
+    );
+    return new WP_Query($args);
+}
+
 // Solicitudes de Información por ciudad
 function get_solicitudes_informacion($city_id = ''){
     $args = array(
@@ -313,6 +415,7 @@ function get_comisiones_miembro($miembro_id = '', $city_id = ''){
             //echo $member_id . ' - ' . $presidente . ' - ' .get_the_ID() .'<br />';
             if ($presidente == $miembro_id){
                 $comisiones[] = array(
+                    'comision_id' => get_the_ID(),
                     'nombre' => get_the_title(),
                     'cargo' => 'Presidente'
                 );
@@ -320,6 +423,7 @@ function get_comisiones_miembro($miembro_id = '', $city_id = ''){
             }
             if ($videpresidente == $miembro_id){
                 $comisiones[] = array(
+                    'comision_id' => get_the_ID(),
                     'nombre' => get_the_title(),
                     'cargo' => 'Vicepresidente'
                 );
@@ -329,6 +433,7 @@ function get_comisiones_miembro($miembro_id = '', $city_id = ''){
                 foreach($demas as $otro){
                     if($otro == $miembro_id){
                         $comisiones[] = array(
+                            'comision_id' => get_the_ID(),
                             'nombre' => get_the_title(),
                             'cargo' => 'Miembro'
                         );
@@ -403,20 +508,22 @@ function estadisticas_del_miembro($miembro_id = ''){
                 $au++;
             }else{
                 // Asistió se cuentan votos a miembro principal
-                switch ($metas[$miembro_id]['mocion_voto']) {
-                    case '1':
-                        $si++; $as++;
-                        break;
-                    case '2':
-                        $no++; $as++;
-                        break;
-                    case '3':
-                        $ab++; $as++;
-                        break;
-                    case '4':
-                        $bl++; $as++;
-                        break;
-                }
+                if (isset($metas[$miembro_id]['mocion_voto'])){
+					switch ($metas[$miembro_id]['mocion_voto']) {
+						case '1':
+							$si++; $as++;
+							break;
+						case '2':
+							$no++; $as++;
+							break;
+						case '3':
+							$ab++; $as++;
+							break;
+						case '4':
+							$bl++; $as++;
+							break;
+					}
+				}
             }
         }
     }
@@ -491,41 +598,47 @@ function get_ranking_votaciones($city_id = ''){
         $as = $au = $ex = $de = $total =  0;
         foreach($mociones->posts as $mocion){
             $metas = get_post_meta($mocion->ID, 'oda_sesion_mocion',true);
-            if(isset($metas[$persona->ID]['member_excusa'])){
-                // se excusó
-                $ex++;
-                if(isset($metas[$persona->ID]['member_suplente'])){
-                    $de++;
-                }
-            }else{
-                // no se excusó, asistíó o no
-                if (isset($metas[$persona->ID]['member_ausente'])){
-                    // No asistió y se excusó se cuentan votos para suplente
-                    $au++;
-                }else{
-                    // Asistió se cuentan votos a miembro principal
-                    switch ($metas[$persona->ID]['mocion_voto']) {
-                        case '1':
-                            $si++; $as++; $total++;
-                            break;
-                        case '2':
-                            $no++; $as++; $total++;
-                            break;
-                        case '3':
-                            $ab++; $as++; $total++;
-                            break;
-                        case '4':
-                            $bl++; $as++; $total++;
-                            break;
+            if (is_array($metas)) {
+                if (isset($metas[$persona->ID]['member_excusa'])) {
+                    // se excusó
+                    $ex++;
+                    if (isset($metas[$persona->ID]['member_suplente'])) {
+                        $de++;
+                    }
+                } else {
+                    // no se excusó, asistíó o no
+                    if (isset($metas[$persona->ID]['member_ausente'])) {
+                        // No asistió y se excusó se cuentan votos para suplente
+                        $au++;
+                    } else {
+                        // Asistió se cuentan votos a miembro principal
+                        if (isset($metas[$persona->ID]['mocion_voto'])) {
+                            switch ($metas[$persona->ID]['mocion_voto']) {
+                            case '1':
+                                $si++; $as++; $total++;
+                                break;
+                            case '2':
+                                $no++; $as++; $total++;
+                                break;
+                            case '3':
+                                $ab++; $as++; $total++;
+                                break;
+                            case '4':
+                                $bl++; $as++; $total++;
+                                break;
+                        }
+                        }
                     }
                 }
             }
+            
         }
         $documentos = documentos_del_miembro($persona->ID);
         //echo $persona->ID .' - '. $as . '<br />';
         $ranking[] = array(
             'id' => $persona->ID,
             'title' => $persona->post_title,
+            'nombres' => get_post_meta($persona->ID, 'oda_miembro_nombres', true),
             'apellidos' => get_post_meta($persona->ID, 'oda_miembro_apellidos', true),
             'thumbnail' => get_the_post_thumbnail_url(
                 $persona->ID, 
@@ -536,7 +649,7 @@ function get_ranking_votaciones($city_id = ''){
                 'thumbnail'
             ),
             'titularizado' => get_post_meta($persona->ID, 'oda_miembro_titularizado', true),
-            'total' => $mociones->post_count,
+            'total' => $total,
             'as' => $as,
             'au' => $au,
             'ex' => $ex,
@@ -547,6 +660,116 @@ function get_ranking_votaciones($city_id = ''){
             'so' => $documentos['solicitudes'],
         );
     }
+    return $ranking;
+
+    // $votos_si['voto'] = 'Afirmativos ('. number_format(($si*100) / $total,2) .'%)';
+}
+
+// obtener el raking de los elementos del concejo
+function get_ranking_mocion($city_id = '', $mocion){
+    $ranking = NULL;
+    $miembros = get_miembro_ciudad($city_id);
+    $metas = get_post_meta($mocion, 'oda_sesion_mocion',true);
+    $mocion_fecha = get_post_meta($mocion, 'mocion_fecha',true);
+    $sesion_id = get_post_meta($mocion, 'oda_parent_sesion',true);
+    
+    $si = $no = $ab = $bl = $as = $au = $ex = $de = $total =  0;
+    foreach ($miembros->posts as $persona) {
+        $status = '';
+            
+        if (is_array($metas)) {
+            if (isset($metas[$persona->ID]['member_excusa'])) {
+                // se excusó
+                $ex++;
+                $status = 'Excusa';
+                if (isset($metas[$persona->ID]['member_suplente'])) {
+                    $de++;
+                    switch ($metas[$persona->ID]['mocion_voto']) {
+                        case '1':
+                            $status = 'Si';
+                            break;
+                        case '2':
+                            $status = 'No';
+                            break;
+                        case '3':
+                            $status = 'Abstención';
+                            break;
+                        case '4':
+                            $status = 'Blanco';
+                            break;
+                    }
+                    $ranking['suplentes'][] = array(
+                        'title' => get_post($metas[$persona->ID]['member_suplente'])->post_title,
+                        'suplencia' => $persona->post_title,
+                        'status' => $status
+                    );
+                }
+            } else {
+                // no se excusó, asistíó o no
+                if (isset($metas[$persona->ID]['member_ausente'])) {
+                    // No asistió y se excusó se cuentan votos para suplente
+                    $au++;
+                    $status = 'Ausente';
+                } else {
+                    // Asistió se cuentan votos a miembro principal
+                    if (isset($metas[$persona->ID]['mocion_voto'])) {
+                        switch ($metas[$persona->ID]['mocion_voto']) {
+                            case '1':
+                                $si++; $as++; $total++; $status = 'Si';
+                                break;
+                            case '2':
+                                $no++; $as++; $total++; $status = 'No';
+                                break;
+                            case '3':
+                                $ab++; $as++; $total++; $status = 'Abstención';
+                                break;
+                            case '4':
+                                $bl++; $as++; $total++; $status = 'Blanco';
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+            
+        //$documentos = documentos_del_miembro($persona->ID);
+        //echo $persona->ID .' - '. $as . '<br />';
+        $ranking['votos'][] = array(
+            //'id' => $persona->ID,
+            'title' => $persona->post_title,
+            //'nombres' => get_post_meta($persona->ID, 'oda_miembro_nombres', true),
+            //'apellidos' => get_post_meta($persona->ID, 'oda_miembro_apellidos', true),
+            /*'thumbnail' => get_the_post_thumbnail_url(
+                $persona->ID, 
+                'thumbnail'
+            ),
+            */
+            /*
+            'partido' => get_the_post_thumbnail_url(
+                get_post_meta($persona->ID, 'oda_partido_owner', true), 
+                'thumbnail'
+            ),
+            */
+            //'titularizado' => get_post_meta($persona->ID, 'oda_miembro_titularizado', true),
+            //'tipo' => 'miembro',
+            'status' => $status,
+        );
+
+    }
+    $ranking['metas'] = array(
+        'nombre_sesion' => get_the_title($sesion_id),
+        'nombre_documento' => get_the_title($mocion),
+        'fecha_mocion' => $mocion_fecha,
+        'total' => $total,  
+        'as' => $as,
+        'au' => $au,
+        'ex' => $ex,
+        'de' => $de,
+        'si' => $si,
+        'no' => $no,
+        'ab' => $ab,
+        'bl' => $bl
+    );
     return $ranking;
 
     // $votos_si['voto'] = 'Afirmativos ('. number_format(($si*100) / $total,2) .'%)';
@@ -601,7 +824,6 @@ function mostrar_imagen_twitter_evaluacion($documento = '', $city){
             <a href="https://twitter.com/intent/tweet?text=<?php echo $tuit; ?>" style="text-decoration: none;">
                 <span class="twitter-circle-icon"><i class="fab fa-twitter text-white fs-20"></i></span>
             </a>
-            <br />
             <p>¡Envía un Tweet a tu Concejo!</p>
             <?php } ?>
         </div>

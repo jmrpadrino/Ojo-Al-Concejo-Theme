@@ -34,7 +34,9 @@ $podio = array();
             <div class="podio-profile order-<?php 
                     echo ($i == 0) ? '2 podio-first' : (($i == 2) ? '3' : $i); 
                 ?> bd-highlight">
-                <img class="img-fluid rounded-circle" src="<?php echo $podio_img; ?>">
+                <a href="<?php echo get_the_permalink($value[0]); ?>">
+                    <img class="img-fluid rounded-circle" src="<?php echo $podio_img; ?>">
+                </a>
             </div>
             <?php
                         }
@@ -67,7 +69,7 @@ $podio = array();
                     <!--
                     <th class="align-middle" style="text-align:center;" scope="row"><?php echo $indice; ?></th>
                     -->
-                    <td class="align-middle"><strong><?php echo $rank['title'] . ' ' . $titularizado ?></strong></td>
+                    <td class="align-middle ta-c"><a class="text-black-light" href="<?php echo get_the_permalink($rank['id']); ?>"><strong><?php echo $rank['title'] . ' ' . $titularizado ?></strong></a></td>
                     <td class="align-middle" style="text-align:center;"><?php echo ($rank['partido']) ? '<img width="50" src="'.$rank['partido'].'">' : ''; ?></td>
                     <td class="align-middle" style="text-align:center;"><?php echo $rank['so'] ?></td>
                 </tr>
@@ -76,10 +78,7 @@ $podio = array();
                 } 
                 ?>
             </tbody>
-        </table>
-        <p>* Información remitida por los miembros del Concejo a la organizacion.</p>
+        </table>        
         <p class="text-right"><a class="table-show-more fs-12 text-muted" href="#">Mostrar más</a></p>
-        <?php if($titularizados){ ?>
-        <?php } ?>
     </div>
 </div>

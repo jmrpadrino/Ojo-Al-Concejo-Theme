@@ -118,6 +118,135 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
     .mask-top {}
     .mask-bottom { overflow: hidden; }
     .bg-twitter { background-color: #04A8EE; }
+
+    /* CSS Casousel */
+    @media (min-width: 768px) and (max-width: 991px) {
+        /* Show 4th slide on md if col-md-4*/
+        #miembros_carousel .carousel-inner .active.col-md-4.carousel-item + .carousel-item + .carousel-item + .carousel-item {
+            position: absolute;
+            top: 0;
+            right: -33.3333%;  /*change this with javascript in the future*/
+            z-index: -1;
+            display: block;
+            visibility: visible;
+        }
+    }
+    @media (min-width: 576px) and (max-width: 768px) {
+        /* Show 3rd slide on sm if col-sm-6*/
+        #miembros_carousel .carousel-inner .active.col-sm-6.carousel-item + .carousel-item + .carousel-item {
+            position: absolute;
+            top: 0;
+            right: -50%;  /*change this with javascript in the future*/
+            z-index: -1;
+            display: block;
+            visibility: visible;
+        }
+    }
+    @media (min-width: 576px) {
+        #miembros_carousel .carousel-item {
+            margin-right: 0;
+        }
+        /* show 2 items */
+        #miembros_carousel .carousel-inner .active + .carousel-item {
+            display: block;
+        }
+        #miembros_carousel .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left),
+        #miembros_carousel .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item {
+            transition: none;
+        }
+        #miembros_carousel .carousel-inner .carousel-item-next {
+            position: relative;
+            transform: translate3d(0, 0, 0);
+        }
+        /* left or forward direction */
+        #miembros_carousel .active.carousel-item-left + .carousel-item-next.carousel-item-left,
+        #miembros_carousel .carousel-item-next.carousel-item-left + .carousel-item,
+        #miembros_carousel .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item {
+            position: relative;
+            transform: translate3d(-100%, 0, 0);
+            visibility: visible;
+        }
+        /* farthest right hidden item must be also positioned for animations */
+        #miembros_carousel .carousel-inner .carousel-item-prev.carousel-item-right {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            display: block;
+            visibility: visible;
+        }
+        /* right or prev direction */
+        #miembros_carousel .active.carousel-item-right + .carousel-item-prev.carousel-item-right,
+        #miembros_carousel .carousel-item-prev.carousel-item-right + .carousel-item,
+        #miembros_carousel .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item {
+            position: relative;
+            transform: translate3d(100%, 0, 0);
+            visibility: visible;
+            display: block;
+            visibility: visible;
+        }
+    }
+    /* MD */
+    @media (min-width: 768px) {
+        /* show 3rd of 3 item slide */
+        #miembros_carousel .carousel-inner .active + .carousel-item + .carousel-item {
+            display: block;
+        }
+        #miembros_carousel .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item + .carousel-item {
+            transition: none;
+        }
+        #miembros_carousel .carousel-inner .carousel-item-next {
+            position: relative;
+            transform: translate3d(0, 0, 0);
+        }
+        /* left or forward direction */
+        #miembros_carousel .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item + .carousel-item {
+            position: relative;
+            transform: translate3d(-100%, 0, 0);
+            visibility: visible;
+        }
+        /* right or prev direction */
+        #miembros_carousel .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item + .carousel-item {
+            position: relative;
+            transform: translate3d(100%, 0, 0);
+            visibility: visible;
+            display: block;
+            visibility: visible;
+        }
+    }
+    /* LG */
+    @media (min-width: 991px) {
+        /* show 4th item */
+        #miembros_carousel .carousel-inner .active + .carousel-item + .carousel-item + .carousel-item {
+            display: block;
+        }
+        #miembros_carousel .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item + .carousel-item + .carousel-item {
+            transition: none;
+        }
+        /* Show 5th slide on lg if col-lg-3 */
+        #miembros_carousel .carousel-inner .active.col-lg-3.carousel-item + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
+            position: absolute;
+            top: 0;
+            right: -25%;  /*change this with javascript in the future*/
+            z-index: -1;
+            display: block;
+            visibility: visible;
+        }
+        /* left or forward direction */
+        #miembros_carousel .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
+            position: relative;
+            transform: translate3d(-100%, 0, 0);
+            visibility: visible;
+        }
+        /* right or prev direction //t - previous slide direction last item animation fix */
+        #miembros_carousel .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
+            position: relative;
+            transform: translate3d(100%, 0, 0);
+            visibility: visible;
+            display: block;
+            visibility: visible;
+        }
+    }
 </style>
 <section class="main-container">
     <div class="container pt-3 pb-3">
@@ -169,7 +298,7 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                     <img class="img-fluid" src="<?php echo THEME_URL . '/img/pla-de-trabajo-pop-up.png'; ?>">
                                                     <!--
                                                     <div class="d-flex h-100 flex-column justify-content-center align-items-center">
-                                                    <a href="https://twitter.com/intent/tweet?text=<?php echo urlencode(get_post_meta(get_post_meta($the_member->ID,'oda_ciudad_owner', true),'oda_ciudad_tweet_folders', true) . ' - ' . get_post_meta($the_member->ID,'oda_miembro_twitter', true)); ?>" style="text-decoration: none;">
+                                                    <a target="_blank" href="https://twitter.com/intent/tweet?text=<?php echo urlencode(get_post_meta(get_post_meta($the_member->ID,'oda_ciudad_owner', true),'oda_ciudad_tweet_folders', true) . ' - ' . get_post_meta($the_member->ID,'oda_miembro_twitter', true)); ?>" style="text-decoration: none;">
                                                             <span class="twitter-circle-icon"><i class="fab fa-twitter text-white fs-20"></i></span>
                                                         </a>
                                                         <br />
@@ -239,7 +368,9 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                     <?php if (!empty($link_radiografia)) { ?>
                     <div class="row pt-2 pb-1">
                         <div class="col-sm-12 text-center">
-                            <h3 class="text-center fs-18 mb-3">Conoce más a tu <strong>Concejal</strong>, ingresando a:</h3>
+                            <div class="mb-3">
+                                <?php echo get_post_meta($the_member_city, 'oda_ciudad__cedula_sidetop', true); ?>
+                            </div>
                             <a class="mb-3 mt-3" href="<?php echo $link_radiografia; ?>" target="_blank">
                                 <img class="img-fluid" src="<?php echo THEME_URL; ?>/img/radiografia-politica-logo.PNG">
                             </a>                    
@@ -251,14 +382,16 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                         </div>
                     </div>
                     <?php } ?>
+                    <?php if ( 'on' != get_post_meta($the_member->ID, 'oda_miembro_parte_concejo_transparente', true)){ ?>
                     <div class="row">
                         <div class="col-sm-12 text-center">
-                            <a href="https://twitter.com/intent/tweet?text=<?php echo urlencode(get_post_meta(get_post_meta($the_member->ID,'oda_ciudad_owner', true),'oda_ciudad_tweet_profile', true) . ' - ' . get_post_meta($the_member->ID,'oda_miembro_twitter', true)); ?>" target="_blank" style="text-decoration: none;">
+                            <a target="_blank" href="https://twitter.com/intent/tweet?text=<?php echo urlencode(get_post_meta(get_post_meta($the_member->ID,'oda_ciudad_owner', true),'oda_ciudad_tweet_profile', true) . ' - ' . get_post_meta($the_member->ID,'oda_miembro_twitter', true)); ?>" target="_blank" style="text-decoration: none;">
                                 <span class="twitter-circle-icon"><i class="fab fa-twitter text-white fs-20"></i></span>
                             </a>
-                            <p class="mt-1"><strong>Mándale un tweet</strong><br />y pídele que sea parte de Concejo Transparente</p>
+                            <p class="mt-1"><?php echo get_post_meta($the_member_city, 'oda_ciudad__cedula_sidebottom', true); ?></p>
                         </div>
                     </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -294,14 +427,14 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                     <?php 
                         $stats = estadisticas_del_miembro($the_member->ID); 
                         $docs = documentos_del_miembro($the_member->ID);    
-                        //var_dump($docs);
+                        //var_dump($stats);
                     ?>
                     <div id="carouselStats" class="carousel slide pl-3 pr-3" data-ride="carousel">
                         <div class="carousel-inner pl-3 pr-3">
                             <div class="carousel-item active">
                                 <div class="row">
                                     <div class="col-sm-12 mask-parent">
-                                        <h3 class="fs-20 ta-c">Total de <strong>votaciones posibles: <?php echo ($stats['asistencias'] + $stats['ausencias'] + $stats['delego']) ?></strong></h3>
+                                        <h3 class="fs-20 ta-c">Total de <strong>votaciones posibles: <?php echo get_mociones_ciudad($the_member_city)->post_count; ?></strong></h3>
                                         <br />
                                         <div class="row">
                                             <div class="col-sm-4">
@@ -351,13 +484,13 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                         <?php if (get_mociones_ciudad($the_member_city)->post_count < 1){ ?>
                                         <div class="mask-node d-flex flex-column justify-content-center align-items-center">
                                             <div class="w-100 text-center p-4 mask-top bg-ececec">
-                                                <span>El <strong>Concejo no transparenta información sobre:</strong> asistencias, ausencias o suplencias de este concejal.</span>
+                                                <span>El <strong>Concejo no transparenta información sobre:</strong> asistencias, ausencias o suplencias <?php echo ($curul == 1) ? 'del alcalde' : 'de este concejal'; ?>.</span>
                                             </div>
                                             <div class="mask-bottom mx-5 my-5 rounded-lg bg-ececec d-flex">
                                                 <div class="p-4">
                                                     <span>Exige al Concejo que <strong>transparente esta información</strong></span>
                                                 </div>
-                                                <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                <a target="_blank" href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
                                                 <div class="bg-twitter p-4">
                                                     <i class="fab fa-twitter fs-28 text-white"></i>
                                                 </div>
@@ -394,7 +527,7 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                         <div class="p-0 fs-12 text-center">
                                                             <span class="d-block mx-2">Exige al Concejo que <strong>transparente esta información</strong></span>
                                                         </div>
-                                                        <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                        <a target="_blank" href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
                                                         <div class="bg-twitter p-2">
                                                             <i class="fab fa-twitter fs-22 text-white"></i>
                                                         </div>
@@ -423,7 +556,7 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                         <div class="p-0 fs-12 text-center">
                                                             <span class="d-block mx-2">Exige al Concejo que <strong>transparente esta información</strong></span>
                                                         </div>
-                                                        <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                        <a target="_blank" href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
                                                         <div class="bg-twitter p-2">
                                                             <i class="fab fa-twitter fs-22 text-white"></i>
                                                         </div>
@@ -465,7 +598,7 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                         <div class="p-0 fs-12 text-center">
                                                             <span class="d-block mx-2">Exige al Concejo que <strong>transparente esta información</strong></span>
                                                         </div>
-                                                        <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                        <a target="_blank" href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
                                                         <div class="bg-twitter p-2">
                                                             <i class="fab fa-twitter fs-22 text-white"></i>
                                                         </div>
@@ -494,7 +627,7 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                                                         <div class="p-0 fs-12 text-center">
                                                             <span class="d-block mx-2">Exige al Concejo que <strong>transparente esta información</strong></span>
                                                         </div>
-                                                        <a href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
+                                                        <a target="_blank" href="https://twitter.com/intent/tweet?text=Exijo al concejo que transparente su información - <?php echo get_post_meta($the_member_city, 'oda_ciudad_twitter_user', true); ?>" style="text-decoration: none;">
                                                         <div class="bg-twitter p-2">
                                                             <i class="fab fa-twitter fs-22 text-white"></i>
                                                         </div>
@@ -519,6 +652,11 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                             <i class="fas fa-chevron-right fs-36"></i>
                             <span class="sr-only">Next</span>
                         </a>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p><?php echo DESCARGOS['periodo']; ?></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -555,58 +693,44 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
                         left: 0;
                     }
                 </style>
-                <div id="carouselExampleControls" class="carousel slide pl-3 pr-3" data-ride="carousel">
+                <div id="miembros_carousel" class="carousel slide pl-3 pr-3" data-ride="carousel">
 
                     <!-- Wrapper for slides -->
-                    <div class="carousel-inner pl-3 pr-3">
-                        <div class="carousel-item active">
-                            <div class="row">
-                                <?php 
-                                    while ($otros_miembros->have_posts()) {
-                                        $otros_miembros->the_post(); 
-                                        $partido_logo = get_post_meta(get_the_ID(), 'oda_partido_owner', true);
-                                        $partido_logo = get_the_post_thumbnail_url($partido_logo, 'thumbnail');
-                                        $nombre = explode(' ', get_post_meta(get_the_ID(), 'oda_miembro_nombres', true));
-                                        $apellido = explode(' ', get_post_meta(get_the_ID(), 'oda_miembro_apellidos', true));
-                                ?>
-                                    <div class="col-md-3 item-placeholder">
-                                        <a href="<?php echo get_the_permalink(get_the_ID()); ?>">
-                                        <div class="single_miembro_thumbnail">
-                                        <img class="partido-logo-carousel" width="40" src="<?php echo $partido_logo; ?>">
-                                        <?php if (has_post_thumbnail()) { ?>
-                                            <img class="img-fluid" src="<?php echo get_the_post_thumbnail_url(get_the_ID(), 'medium'); ?>">
-                                        <?php } else { ?>
-                                            <img class="img-fluid" src="https://via.placeholder.com/250/?text=<?php echo $nombre[0] . '%20' . $apellido[0]; ?>">
-                                        <?php } ?>
-                                            <div class="white-gradient"></div>
-                                        </div>
-                                        <h4 class="fs-16 text-center text-black-light mt-2 mb-3"><?php echo get_the_title(); ?></h4>
-                                        </a>
-                                    </div>
-                                <?php 
-                                    if ( $i % 4 == 0){
-                                ?>
+                    <div class="carousel-inner pl-3 pr-3 row w-100 mx-auto" role="listbox">
+                        <?php 
+                            $counter_slide = 0;
+                            while ($otros_miembros->have_posts()) {
+                                $otros_miembros->the_post(); 
+                                $partido_logo = get_post_meta(get_the_ID(), 'oda_partido_owner', true);
+                                $partido_logo = get_the_post_thumbnail_url($partido_logo, 'thumbnail');
+                                $nombre = explode(' ', get_post_meta(get_the_ID(), 'oda_miembro_nombres', true));
+                                $apellido = explode(' ', get_post_meta(get_the_ID(), 'oda_miembro_apellidos', true));
+                        ?>
+                        <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 <?php echo ($counter_slide == 0) ? 'active' : ''; ?>">
+                            <div class="item-placeholder">
+                                <a href="<?php echo get_the_permalink(get_the_ID()); ?>">
+                                <div class="single_miembro_thumbnail">
+                                <img class="partido-logo-carousel" width="40" src="<?php echo $partido_logo; ?>">
+                                <?php if (has_post_thumbnail()) { ?>
+                                    <img class="img-fluid" src="<?php echo get_the_post_thumbnail_url(get_the_ID(), 'medium'); ?>">
+                                <?php } else { ?>
+                                    <img class="img-fluid" src="https://via.placeholder.com/250/?text=<?php echo $nombre[0] . '%20' . $apellido[0]; ?>">
+                                <?php } ?>
+                                    <div class="white-gradient"></div>
+                                </div>
+                                <h4 class="fs-16 text-center text-black-light mt-2 mb-3"><?php echo get_the_title(); ?></h4>
+                                </a>
                             </div>
                         </div>
-                        <div class="carousel-item">
-                            <div class="row">
-                                <?php
-                                    }
-                                ?>
-                                <?php 
-                                        $i++;
-                                    } // End While 
-                                ?>
-                            </div>
-                        </div>
+                        <?php $counter_slide++; } // End While ?>
                     </div>
 
                     <!-- Controls -->
-                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                    <a class="carousel-control-prev" href="#miembros_carousel" role="button" data-slide="prev">
                         <i class="fas fa-chevron-left fs-36"></i>
                         <span class="sr-only">Previous</span>
                     </a>
-                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                    <a class="carousel-control-next" href="#miembros_carousel" role="button" data-slide="next">
                         <i class="fas fa-chevron-right fs-36"></i>
                         <span class="sr-only">Next</span>
                     </a>
@@ -631,4 +755,23 @@ $city_color = get_post_meta($the_member_city, 'oda_ciudad_color', true);
 
         })
     })
+    $('#miembros_carousel').on('slide.bs.carousel', function (e) {
+        var $e = $(e.relatedTarget);
+        var idx = $e.index();
+        var itemsPerSlide = 5;
+        var totalItems = $('.carousel-item').length;
+    
+        if (idx >= totalItems-(itemsPerSlide-1)) {
+            var it = itemsPerSlide - (totalItems - idx);
+            for (var i=0; i<it; i++) {
+                // append slides to end
+                if (e.direction=="left") {
+                    $('.carousel-item').eq(i).appendTo('.carousel-inner');
+                }
+                else {
+                    $('.carousel-item').eq(0).appendTo('.carousel-inner');
+                }
+            }
+        }
+    });
 </script>

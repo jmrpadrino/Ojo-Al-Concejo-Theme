@@ -1,5 +1,39 @@
 Date.prototype.getUnixTime = function() { return this.getTime()/1000|0 };
+// Filtros 
+var filtersOpended = false;
+var activeMocion = '';
+var activeMocionName = '';
 $(document).ready(function() {
+    // Filtros 
+    $('.btn-link').addClass('collapsed');
+    // Paginación de los listados
+    make_pagination();
+    var paginaDoc = 1;
+    var grupomaximo = $('.pagination-list').data('maxgroup')
+
+    // Botones paginacion listados
+    $('.page-next').click( function(){
+        if (paginaDoc < grupomaximo){
+            paginaDoc++;
+            $('.card.group').addClass('deactivated');
+            $('.card.group-' + paginaDoc).removeClass('deactivated')
+            $('#pag_indicator').html(paginaDoc);
+        }
+    })
+    
+    $('.page-prev').click( function(){
+        if (paginaDoc <= grupomaximo){
+            console.log(paginaDoc);
+            if (paginaDoc != 1){
+                paginaDoc--;
+                $('.card.group').addClass('deactivated');
+                $('.card.group-' + paginaDoc).removeClass('deactivated');
+                $('#pag_indicator').html(paginaDoc);
+            }
+        }
+    })
+
+
     var dateSearch = false;
     console.log('App Start');
     $('#buscar').click(oda_search)
@@ -48,13 +82,13 @@ $(document).ready(function() {
                     if(dateSearch){
                         $.each(documentos, function(index, value){
                             var thisDate = $(this).data('date');
+                            console.log(unixInicio, thisDate, unixFinal);
                             if(thisDate >= unixInicio && thisDate <= unixFinal){
                                 $(this).addClass('datefiltered');
-                                $(this).removeClass('d-none');
+                                $(this).removeClass('deactivated');
                                 indice.push('date=datefiltered'.split('=') );
-                                console.log(unixInicio, thisDate, unixFinal);
                             }else{
-                                $(this).addClass('d-none');
+                                $(this).addClass('deactivated');
                             }
                         })
                         dateSearch = false;
@@ -90,6 +124,7 @@ $(document).ready(function() {
         }
         $('#results_amount').text($('.listado-documentos .card:not(.deactivated)').length);
         $('#show_results').show();
+        hidePagination();
 
         //selectorQuery = selectors.substring(0, selectors.length - 1);
         //console.log(selectors);
@@ -104,6 +139,9 @@ $(document).ready(function() {
         $('#show_results').hide();
         $('.card').removeClass('deactivated');
         $('.card').removeClass('activated');
+        $('#query').val('');
+        $('.pagination-list').show();
+        showPagination();
     })
     $('.clean-radio').click(function() {
         target = $(this).data('radio');
@@ -123,11 +161,13 @@ $(document).ready(function() {
     $('.show_votacion').click(function(){
         var resultados = $(this).data('votacion');
         var partidosinfo = $(this).data('partidosinfo');
+        activeMocion = $(this).data('mocion');
+        activeMocionName = $(this).data('mocionname');
         $('#modal_title').html('');
         $('#modal_title').html($(this).data('modaltitle') + '<br/><span class="text-muted fs-12">Resultados de la votación para Aprobación de Proyecto');
-        console.log(partidosinfo);
-        //console.log(resultados);        
-        console.log(partidosinfo.votos);
+        //console.log(partidosinfo);
+        console.log(activeMocion, activeMocionName);        
+        //console.log(partidosinfo.votos);
         
         am4core.ready(function() {
 
@@ -184,11 +224,11 @@ $(document).ready(function() {
                     color: color,
                     size: 15
                 }
-                //series.columns.template.column.adapter.add("cornerRadiusTopRight", cornerRadius);
-                //series.columns.template.column.adapter.add("cornerRadiusBottomRight", cornerRadius);
+                series.columns.template.column.adapter.add("cornerRadiusTopRight", cornerRadius);
+                series.columns.template.column.adapter.add("cornerRadiusBottomRight", cornerRadius);
                 
                 // Add label
-                /*
+                
                 var labelBullet = series.bullets.push(new am4charts.LabelBullet());
                 labelBullet.label.text = "{valueX}";
                 labelBullet.label.fontSize = 16;
@@ -196,7 +236,7 @@ $(document).ready(function() {
                 labelBullet.locationY = 0.5;
                 labelBullet.locationX = 0.5;
                 labelBullet.label.hideOversized = true;
-                */
+                
                 return series;
             }
 
@@ -268,117 +308,63 @@ $(document).ready(function() {
         });
         
     })
-	// Clic en EXCEL
-    $('.excel-ranking').click( function(){
-        var filter = $('.data-placeholder.activated').data('target');
-        var cityid = $('.data-placeholder.activated').data('city');
-        var citiName = $('.main-container').data('cityname');
-        $.ajax({
-            url: oda_dom_vars.ajaxurl,
-            type: 'GET',
-            data: {
-                action: 'oda_generate_xls',
-                filter: filter,
-                city: cityid,
-                cityname:citiName
-            },
-            /*
-            xhrFields: {
-                responseType: 'blob'
-            },
-            */
-            beforeSend: function(){
-                //$('body').toggleClass('loading-overlay-showing');
-            },
-            success: function(data){
-                //$('body').toggleClass('loading-overlay-showing');
-                console.log(data);
-                var $a = $("<a>");
-                $a.attr("href",data.file);
-                $("body").append($a);
-                $a.attr("download","file.xls");
-                $a[0].click();
-                $a.remove();
-                /*
-                var a = document.createElement('a');
-                var url = window.URL.createObjectURL(data);
-                a.href = url;
-                a.download = 'oc_'+citiName+'_'+filter+'.csv';
-                document.body.append(a);
-                a.click();
-                a.remove();
-                window.URL.revokeObjectURL(url);
-                */
-            },
-            error: function(xhr,err){
-                console.log(err);
-                console.log(xhr);
-            }
-
-        })
-
-    })
 })
-    // Clic en CSV 
-    $('.csv-ranking').click( function(){
-        var filter = $('.data-placeholder.activated').data('target');
-        var cityid = $('.data-placeholder.activated').data('city');
-        var citiName = $('.main-container').data('cityname');
-        $.ajax({
-            url: oda_dom_vars.ajaxurl,
-            type: 'GET',
-            data: {
-                action: 'oda_generate_csv',
-                filter: filter,
-                city: cityid
-            },
-            /*
-            xhrFields: {
-                responseType: 'blob'
-            },
-            */
-            beforeSend: function(){
-                $('body').toggleClass('loading-overlay-showing');
-            },
-            success: function(data){
-                $('body').toggleClass('loading-overlay-showing');
-                console.log(data);
-                /*
-                var a = document.createElement('a');
-                var url = window.URL.createObjectURL(data);
-                a.href = url;
-                a.download = 'oc_'+citiName+'_'+filter+'.csv';
-                document.body.append(a);
-                a.click();
-                a.remove();
-                window.URL.revokeObjectURL(url);
-                */
-            }
-
-        })
-
-    })
+	
 
 
 function expandAll() {
-    console.log('click');
-    if ($('#expand_text').text() == 'Expandir') {
+    if(!filtersOpended){
+        filtersOpended = true;
         $('#expand_text').text('Contraer')
-    } else {
+        $.each($('.btn-link'), function(index,value){
+            if($(this).hasClass('collapsed')){
+                $(this).click();
+            }
+        })
+    }else{
+        filtersOpended = false;
         $('#expand_text').text('Expandir')
+        $.each($('.btn-link'), function(index,value){
+            if(!$(this).hasClass('collapsed')){
+                $(this).click();
+            }
+        })
     }
-    $('#circunscripcion .btn').click();
-    $('#genero .btn').click();
-    $('#organizacion .btn').click();
-    $('#comision .btn').click();
+    
 }
 
 function oda_search(){
+    var encontrados = 0;
     query = $('#query').val();
         $('.documento').addClass('deactivated');
         $.each($('.documento-title'), function(index, value){
             if ( $(this).text().toLowerCase().includes(query.toLowerCase()) ){
                 $(this).parents('.documento').removeClass('deactivated');
+                encontrados++;
             }
         })
+        $('#results_amount').text($('.listado-documentos .card:not(.deactivated)').length);
+        $('#show_results').show();
+        hidePagination();
+}
+
+function make_pagination(){
+    var elementos = $('.listado-documentos:not(no-paginator) .card');
+    if (elementos.length > 0){
+        $('.card.group').addClass('deactivated');
+        $('.card.group-1').removeClass('deactivated');
+    }else{
+        return false;
+    }
+}
+
+function hidePagination(){
+    $('.pagination-list').removeClass('d-flex');
+    $('.pagination-list').addClass('d-none');
+    $('.pagination-list').parents('.row').prev('hr').hide();
+}
+function showPagination(){
+    $('.pagination-list').removeClass('d-none');
+    $('.pagination-list').addClass('d-flex');
+    $('.pagination-list').parents('.row').prev('hr').show();
 }

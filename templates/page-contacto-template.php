@@ -12,14 +12,14 @@ if (isset($_POST['contact_send'])){
 <p><strong>Mensaje:</strong> <?php echo $_POST['mensaje']; ?></p>
 <?php
     $html = ob_get_clean();
-    $to = 'info@ojoalconcejo.org';
+    $to = 'info@ojoalconcejo.org, info@ciudadaniaydesarrollo.org';
     $subject = 'Tiene un mensaje nuevo de Ojo al Concejo';
     $body = $html;
     $headers[] = 'Content-Type: text/html; charset=UTF-8';
     $headers[] = 'From: Ojo al Concejo <info@ojoalconcejo.org>';
     $headers[] = 'Reply-To: No Reply <noreply@ojoalconcejo.org>';
     $mensaje = '<span class="text-danger bold">Su mensaje no se ha podido enviar.</span>';
-    if( wp_mail( $to, $subject, '', $headers ) ){
+    if( wp_mail( $to, $subject, $body, $headers ) ){
         unset($_POST);
         $mensaje = '<span class="text-success bold">Su mensaje ha sido enviado con éxito.</span>';
     };
@@ -36,7 +36,13 @@ if (isset($_POST['contact_send'])){
     }
 </style>
 <div class="map-container">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.797116451607!2d-78.48195628572998!3d-0.1867966354664069!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59a7ebea4f481%3A0xfa8f226c19a6dee9!2sMonasterio%20Plaza%2C%20Av.%20Eloy%20Alfaro%202129%2C%20Quito%20170135!5e0!3m2!1ses!2sec!4v1598393722636!5m2!1ses!2sec" width="100%" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 mt-4">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.797116451607!2d-78.48195628572998!3d-0.1867966354664069!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59a7ebea4f481%3A0xfa8f226c19a6dee9!2sMonasterio%20Plaza%2C%20Av.%20Eloy%20Alfaro%202129%2C%20Quito%20170135!5e0!3m2!1ses!2sec!4v1598393722636!5m2!1ses!2sec" width="100%" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+            </div>
+        </div>
+    </div>
 </div>
 <section id="contact-info">
     <div class="container mt-4 mb-4">
@@ -86,7 +92,7 @@ if (isset($_POST['contact_send'])){
                     <p><strong>Correo:</strong> info@ciudadaniaydesarrollo.org<br /><span style="margin-left: 63px;">info@ojoalconcejo.org</span></p>
                     
                 </div>
-                <a href="#" class="btn btn-secondary contact-btn">¿Eres miembro del Concejo?</a>
+                <a target="_blank" href="https://forms.gle/q4pKmpKop31ATeP17" class="btn btn-secondary contact-btn">¿Eres miembro del Concejo?</a>
             </div>
         </div>
     </div>

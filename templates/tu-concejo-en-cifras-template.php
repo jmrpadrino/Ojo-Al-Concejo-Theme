@@ -7,7 +7,15 @@ $city_primary_color = get_post_meta($item->ID, 'oda_ciudad_color', true);
 $ranking = get_ranking_votaciones($item->ID);
 $id = array_column($ranking,'id');
 $name = array_column($ranking,'apellidos');
-$explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sino también a un orden alfabético.</p>';
+$mociones_validas = 0;
+$mociones = get_mociones_ciudad($item->ID);
+if( $mociones->have_posts() ){
+    while( $mociones->have_posts() ){ $mociones->the_post();
+        if (count(get_post_meta(get_the_ID(), 'oda_sesion_mocion', true)) > 1) {
+            $mociones_validas++;
+        }
+    }
+}
 ?>
 <style>
     .info-sign-filters { color: <?php echo $city_primary_color; ?>; }
@@ -45,7 +53,7 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                 </h1>
             </div>
             <div class="col-sm-12 my-3">
-                <p>Número de asistencias de los miembros del Concejo respecto al total de posibles votaciones desde su incorporación. <strong>Las votaciones que se han realizado hasta el momento son: <?php echo get_mociones_ciudad($item->ID)->post_count; ?></strong>.</p>
+                <p>Número de asistencias de los miembros del Concejo respecto al total de posibles votaciones desde su incorporación. <strong>Las votaciones que se han realizado hasta el momento son: <?php echo $mociones_validas; ?></strong>.</p>
             </div>
         </div>
         <div class="row ausencias data-header">
@@ -55,13 +63,13 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                 </h1>
             </div>
             <div class="col-sm-12 my-3">
-                <p>Número de ausencias de los miembros del Concejo respecto al total de posibles votaciones desde su incorporación. <strong>Las votaciones que se han realizado hasta el momento son: <?php echo get_mociones_ciudad($item->ID)->post_count; ?></strong>.</p>
+                <p>Número de ausencias de los miembros del Concejo respecto al total de posibles votaciones desde su incorporación. <strong>Las votaciones que se han realizado hasta el momento son: <?php echo $mociones_validas; ?></strong>.</p>
             </div>
         </div>
         <div class="row suplentes data-header">
             <div class="col-sm-12 col-lg-8 offset-lg-2 text-center"><h1><span class="bold">Participación</span> del <span class="bold">suplente</span> en <span class="bold">votaciones</span></h1></div>
             <div class="col-sm-12 my-3">
-                <p>Número de participación del suplente respecto al total de posibles votaciones desde su incorporación. <strong>Las votaciones que se han realizado hasta el momento son: <?php echo get_mociones_ciudad($item->ID)->post_count; ?></strong>.</p>
+                <p>Número de participación del suplente respecto al total de posibles votaciones desde su incorporación. <strong>Las votaciones que se han realizado hasta el momento son: <?php echo $mociones_validas; ?></strong>.</p>
             </div>
         </div>
         <div class="row ordenanzas data-header">
@@ -107,8 +115,7 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                                     <div class="row">
                                         <?php
                                             $image_url = 'http://placehold.it/800x600?text=Manual';
-                                            $imagen_popup = get_post_meta($item->ID, 'oda_ciudad_popupinfo_ordenanza', true);
-                                            $imagen_popup = '';
+                                            $imagen_popup = get_post_meta($item->ID, 'oda_ciudad_popupinfo_concejo_cifras', true);
                                             if($imagen_popup){
                                                 $image_url = $imagen_popup;
                                             }
@@ -120,7 +127,7 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                         </div>
                     </div>
                     <div class="col-sm-12">
-                        <select id="votaciones" class="form-control rounded-0 bg-light py-3 fs-18">
+                        <select id="votaciones" class="form-control rounded-0 bg-light py-3 fs-14">
                             <option value="">Seleccione</option>
                             <option value="asistencias" selected>Asistencias a votaciones</option>
                             <option value="ausencias">Ausencias a votaciones</option>
@@ -133,7 +140,7 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                         <p class="bold fs-14 text-muted">¿Qué ha hecho el Concejo?</p>
                     </div>
                     <div class="col-sm-12">
-                    <select id="concejo" class="form-control rounded-0 bg-light py-3 fs-18">
+                    <select id="concejo" class="form-control rounded-0 bg-light py-3 fs-14">
                             <option value="">Seleccione</option>
                             <option value="ordenanzas">Proyectos de ordenanzas</option>
                             <option value="resoluciones">Proyectos de resoluciones</option>
@@ -166,7 +173,10 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                             </div>
                         </div>
                     </div>
-                    <?php include('evaluacion/datos-asistencia-template.php'); echo $explain; 
+                    <?php include('evaluacion/datos-asistencia-template.php'); 
+                        if($titularizados){
+                            echo '<p>' . DESCARGOS['votaciones'] . '</p>'; 
+                        }
                     }else{ 
                         mostrar_imagen_twitter_evaluacion('mociones', $item->ID);
                     } ?>
@@ -189,7 +199,10 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                             </div>
                         </div>
                     </div>
-                <?php include('evaluacion/datos-ausencias-template.php'); echo $explain; 
+                <?php include('evaluacion/datos-ausencias-template.php'); 
+                        if($titularizados){
+                            echo '<p>' . DESCARGOS['votaciones'] . '</p>';
+                        } 
                     }else{ 
                         mostrar_imagen_twitter_evaluacion('mociones', $item->ID);
                     } ?>
@@ -212,7 +225,10 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                             </div>
                         </div>
                     </div>
-                    <?php include('evaluacion/datos-suplentes-template.php'); echo $explain; 
+                    <?php include('evaluacion/datos-suplentes-template.php');
+                        if($titularizados){
+                            echo '<p>' . DESCARGOS['votaciones'] . '</p>';
+                        } 
                     }else{ 
                         mostrar_imagen_twitter_evaluacion('mociones', $item->ID);
                     } ?>
@@ -235,7 +251,7 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                             </div>
                         </div>
                     </div>
-                <?php include('evaluacion/datos-ordenanzas-template.php'); echo $explain; 
+                <?php include('evaluacion/datos-ordenanzas-template.php'); 
                     }else{ 
                         mostrar_imagen_twitter_evaluacion('ordenanzas', $item->ID);
                     } ?>
@@ -258,7 +274,7 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                             </div>
                         </div>
                     </div>
-                <?php include('evaluacion/datos-resoluciones-template.php'); echo $explain; 
+                <?php include('evaluacion/datos-resoluciones-template.php'); 
                     }else{ 
                         mostrar_imagen_twitter_evaluacion('resoluciones', $item->ID);
                     } ?>
@@ -281,7 +297,8 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                             </div>
                         </div>
                     </div>
-                <?php include('evaluacion/datos-observaciones-template.php'); echo $explain; 
+                <?php include('evaluacion/datos-observaciones-template.php'); 
+                        echo '<p>' . DESCARGOS['remitido'] . '</p>';
                     }else{ 
                         mostrar_imagen_twitter_evaluacion('observaciones', $item->ID);
                     } ?>
@@ -304,7 +321,8 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                             </div>
                         </div>
                     </div>
-                <?php include('evaluacion/datos-solicitudes-template.php'); echo $explain; 
+                <?php include('evaluacion/datos-solicitudes-template.php'); 
+                        echo '<p>' . DESCARGOS['remitido'] . '</p>';
                     }else{ 
                         mostrar_imagen_twitter_evaluacion('solicitudes', $item->ID);
                     } ?>
@@ -312,6 +330,10 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
                 <?php /*
                 <div id="comparecencias" class="data-placeholder"><?php include('evaluacion/datos-solicitudes-template.php') ?></div>
                 */ ?>
+                <?php 
+                    echo '<p>' . DESCARGOS['cuantitativo'] . '</p>';
+                    echo '<p>' . DESCARGOS['periodo'] . '</p>'; 
+                ?>
             </div>
         </div>
 </section>
@@ -342,7 +364,86 @@ $explain = '<p>El cuadro de datos responde no solo a un aspecto cuantitativo sin
             $(this).remove()
             return false;
         })
-    })
+
+        // Clic en EXCEL
+        $('.excel-ranking').click( function(){
+            var filter = $('.data-placeholder.activated').data('target');
+            var cityid = $('.data-placeholder.activated').data('city');
+            var citiName = $('.main-container').data('cityname');
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_xls_evaluacion',
+                    filter: filter,
+                    city: cityid,
+                    cityname:citiName
+                },
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    var $a = $("<a>");
+                    $a.attr("href",data.file);
+                    $("body").append($a);
+                    $a.attr("download","OC_consolidado_concejo_municipal_"+citiName+".xls");
+                    $a[0].click();
+                    $a.remove();                   
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+        // Clic en CSV 
+        $('.csv-ranking').click( function(){
+            var filter = $('.data-placeholder.activated').data('target');
+            var cityid = $('.data-placeholder.activated').data('city');
+            var citiName = $('.main-container').data('cityname');
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_csv_evaluacion',
+                    filter: filter,
+                    city: cityid
+                },
+                
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'OC_consolidado_concejo_municipal_'+citiName+'.csv';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+    }) // End Document Ready
     function gotoTop(){
         $('html, body').animate({scrollTop:0},500);
     }

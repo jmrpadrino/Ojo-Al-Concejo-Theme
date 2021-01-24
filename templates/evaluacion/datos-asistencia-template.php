@@ -18,7 +18,7 @@ $podio = array();
             <?php 
                 if($grupos){
                     $i = 0;
-                    foreach($grupos as $grupo => $value){   
+                    foreach($grupos as $grupo => $value){  
                         if($i <= 2){
                             $value[0];
                             $podio_img = 'http://placehold.it/100x100?text=Podio';
@@ -34,7 +34,9 @@ $podio = array();
             <div class="podio-profile order-<?php 
                     echo ($i == 0) ? '2 podio-first' : (($i == 2) ? '3' : $i); 
                 ?> bd-highlight">
-                <img class="img-fluid rounded-circle" src="<?php echo $podio_img; ?>">
+                <a href="<?php echo get_the_permalink($value[0]); ?>">
+                    <img class="img-fluid rounded-circle" src="<?php echo $podio_img; ?>">
+                </a>
             </div>
             <?php
                         }
@@ -69,11 +71,11 @@ $podio = array();
                     <!--
                     <th class="align-middle" style="text-align:center;" scope="row"><?php echo $indice; ?></th>
                     -->
-                    <td class="align-middle"><strong><?php echo $rank['title'] . ' ' . $titularizado ?></strong></td>
+                    <td class="align-middle ta-c"><a class="text-black-light" href="<?php echo get_the_permalink($rank['id']); ?>"><strong><?php echo $rank['title'] . ' ' . $titularizado ?></strong></a></td>
                     <td class="align-middle" style="text-align:center;"><?php echo ($rank['partido']) ? '<img width="50" src="'.$rank['partido'].'">' : ''; ?></td>
                     <td class="align-middle" style="text-align:center;"><?php echo $rank['as'] ?></td>
-                    <td class="align-middle" style="text-align:center;"><?php echo $rank['total'] ?></td>
-                    <td class="align-middle" style="text-align:center;"><?php echo ($rank['as'] > 0) ? number_format(($rank['as']*100) / $rank['total'],0) . '%' : ''; ?></td>
+                    <td class="align-middle" style="text-align:center;"><?php echo $mociones_validas ?></td>
+                    <td class="align-middle" style="text-align:center;"><?php echo ($rank['as'] > 0) ? number_format(($rank['as']*100) / $mociones_validas,0) . '%' : ''; ?></td>
                 </tr>
                 <?php 
                     if ($index == 4){ break; }
@@ -82,8 +84,5 @@ $podio = array();
             </tbody>
         </table>
         <p class="text-right"><a class="table-show-more fs-12 text-muted" href="#">Mostrar más</a></p>
-        <?php if($titularizados){ ?>
-        <p>* El total de votaciones posibles de este miembro del Concejo difiere del resto debido a que fue titularizado tras las renuncias/ausencias del titular</p>
-        <?php } ?>
     </div>
 </div>

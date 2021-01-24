@@ -63,7 +63,7 @@ if (is_page()){
                     <iframe src="https://www.youtube.com/embed/<?php echo get_post_meta($page->ID, 'oca_videp_inf', true); ?>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <a href="#" class="btn btn-secondary fs-14">Ver&nbsp;&nbsp;&nbsp;<i class="far fa-file-alt"></i></a>
                     </div>
                     <div class="col-sm-4">

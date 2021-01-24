@@ -6,7 +6,8 @@ $item = get_page_by_path($ciudad, OBJECT, 'ciudad');
 $city_primary_color = get_post_meta($item->ID, 'oda_ciudad_color', true);
 
 
-$org_politicas          = get_organizaciones_politicas();
+//$org_politicas          = get_organizaciones_politicas();
+$org_politicas          = get_organizaciones_politicas_ciudad($item->ID);
 $comisiones_city        = get_comisiones_ciudad($item->ID);
 $documentos             = get_ordenanzas_ciudad($item->ID);
 $fases_ciudad           = get_post_meta($item->ID, 'oda_ciudad_fase', true);
@@ -48,7 +49,7 @@ $iniciativa_tipo = array(
             <div class="col-12 col-lg-3">
                 <div class="row">
                     <div class="col">
-                        <h1 class="fs-20 bold">Proyectos de ordenanzas</h1>
+                        <h1 class="fs-18 bold">Proyectos de ordenanzas</h1>
                         <p>Búsqueda fácil según el título del documento o el nombre del proponente.</p>
                     </div>
                 </div>
@@ -224,7 +225,7 @@ $iniciativa_tipo = array(
                                     </div>
                                 <?php } // END Statuses 
                                 ?>
-                                <div id="fecha">
+                                <div id="fecha" class="estano">
                                     <div class="card">
                                         <div class="card-header" id="fechah">
                                             <h5 class="mb-0">
@@ -242,7 +243,7 @@ $iniciativa_tipo = array(
                                                 <div class="row">
                                                     <div class="col-sm-12">
                                                         <label class="form-check-label" for="date_i">Desde
-                                                            <input class="form-control date-control" type="date" name="date_i" max="<?php echo date('Y-m-d'); ?>" value="" />
+                                                            <input class="form-control date-control" type="date" name="date_i" max="<?php echo date('Y-m-d'); ?>" value="" placeholder="Desde" />
                                                         </label>
                                                     </div>
                                                     <div class="col-sm-12">
@@ -251,8 +252,6 @@ $iniciativa_tipo = array(
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <br />
-                                                <p><strong>Nota:</strong> use ambos elementos para buscar en un rango de fechas</p>
                                                 <p class="ta-r bold"><span class="clean-radio" data-radio="fecha">Desactivar filtro</span></p>
                                             </div>
                                         </div>
@@ -265,23 +264,33 @@ $iniciativa_tipo = array(
                             <div class="col-8 col-sm-8 text-right"><button id="clear_filters" type="reset" class="btn-clear-filters bold">|&nbsp;&nbsp;Borrar filtros</button></div>
                         </div>
                     </form>
-
-                    fecha<input type="text" name="date_test">
                 </div>
             </div>
             <div class="col-12 col-lg-9 pl-5">
+                <div class="row my-3">
+                    <div class="col-sm-12 col-lg-6 offset-lg-6 text-right">
+                        <div class="btn-oda excel-ranking">
+                            <span class="button-name">Excel</span>
+                            <span class="button-icon"><i class="fas fa-download"></i></span>
+                        </div>
+                        <div class="btn-oda csv-ranking">
+                            <span class="button-name">CSV</span>
+                            <span class="button-icon"><i class="fas fa-download"></i></span>
+                        </div>
+                    </div>
+                </div>
                 <h2 class="fs-16">Listado</h2>
                 <?php if ($documentos->have_posts()) { ?>
-                    <?php if ($documentos->post_count > 10) { ?>
+                    <?php if ($documentos->post_count > 8) { ?>
                         <hr />
                         <div class="row">
                             <div class="col">
-                                <ul class="list-no-style d-flex justify-content-end pagination-list">
-                                    <li><a href="#">1</a></li>
+                                <ul class="list-no-style d-flex justify-content-end pagination-list" data-maxgroup="<?php echo ceil($documentos->post_count / 8); ?>">
+                                    <li id="pag_indicator">1</li>
                                     <li>-</li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-chevron-right"></i></a></li>
+                                    <li><?php echo ceil($documentos->post_count / 8); ?></li>
+                                    <li class="paginate-link page-prev" title="Anterior"><i class="fa fa-chevron-left"></i></li>
+                                    <li class="paginate-link page-next" title="Siguiente"><i class="fa fa-chevron-right"></i></li>
                                 </ul>
                             </div>
                         </div>
@@ -290,19 +299,60 @@ $iniciativa_tipo = array(
                         <div class="col-12">
                             <div class="accordion listado-documentos" id="listadodocumentos">
                                 <?php
-                                $counter = 0;
+                                $counter = 1;
+                                $grupo = 1;
                                 while ($documentos->have_posts()) {
                                     $documentos->the_post();
-                                    $comision = '';
-                                    $comision = get_post_meta(get_the_ID(), 'oda_ordenanza_comision', true);
-                                    $proponente = get_post_meta(get_the_ID(), 'oda_ordenanza_proponente', true);
                                     $iniciativa = get_post_meta(get_the_ID(), 'oda_ordenanza_iniciativa', true);
+
                                     $estado = get_post_meta(get_the_ID(), 'oda_ordenanza_estado', true);
                                     $partidos_documento = get_partido_politico_documento(get_the_ID(), 'ordenanza');
                                     $fecha_documento = get_post_meta(get_the_ID(), 'oda_ordenanza_fecha', true);
                                     $tema_documento = get_post_meta(get_the_ID(), 'oda_ordenanza_incidencia_temas', true);
+
+                                    switch($iniciativa){
+                                        case 'alcalde': 
+                                            $alcalde = new WP_Query(array(
+                                                'post_type' => 'miembro',
+                                                'posts_per_page' => -1,
+                                                'meta_query' => array(
+                                                    'relation' => 'AND',
+                                                    array(
+                                                        'key' => 'oda_ciudad_owner',
+                                                        'value' => $item->ID,
+                                                        'compare' => '='
+                                                    ),
+                                                    array(
+                                                        'key' => 'oda_miembro_cargo',
+                                                        'value' => 1,
+                                                        'compare' => '='
+                                                    )
+                                                )
+                                            ));
+                                            $solicitante = $alcalde->posts[0]->post_title;
+                                            break;
+                                        case 'concejal': 
+                                            $concejal = '';
+                                            $elementos = get_post_meta(get_the_ID(), 'oda_ordenanza_miembros', true);
+                                            foreach ($elementos as $index => $elemento){
+                                                if ($index > 0){
+                                                    $concejal .= ', ';
+                                                }
+                                                $concejal .= get_post($elemento)->post_title;
+                                            }
+                                            $solicitante = $concejal;
+                                            break;
+                                        case 'comision': 
+                                            $comision = get_post(get_post_meta(get_the_ID(), 'oda_ordenanza_comision', true))->post_title;
+                                            $solicitante = $comision;
+                                            break;
+                                        case 'ciudadania': 
+                                            $ciudadano = get_post_meta(get_the_ID(), 'oda_ordenanza_ciudadania', true);
+                                            $solicitante = $ciudadano;
+                                            break;
+                                    }
                                 ?>
-                                    <div class="card documento<?php
+                                    <div class="card group group-<?php echo $grupo; ?> documento<?php
                                                     echo ($comision) ? ' com-' . $comision . '' : '';
                                                     echo ($estado) ? ' s-' . $estado . '' : '';
                                                     echo ($tema_documento) ? ' t-' . $tema_documento . '' : '';
@@ -312,17 +362,17 @@ $iniciativa_tipo = array(
                                                         }
                                                     }
                                                     ?>" data-date="<?php echo ($fecha_documento) ? date('U', strtotime($fecha_documento)) : ''; ?>">
-                                        <div class="card-header" id="heading-<?php echo get_the_ID(); ?>">
+                                        <div class="card-header px-0" id="heading-<?php echo get_the_ID(); ?>">
                                             <h2 class="mb-0 fs-16 lh-1 hover-underlined">
                                                 <a class="text-left text-black-light collapsed cursor-pointer" data-toggle="collapse" data-target="#collapse-<?php echo get_the_ID(); ?>" aria-expanded="false" aria-controls="collapse-<?php echo get_the_ID(); ?>">
                                                     <span class="documento-title"><?php echo get_the_title(); ?></span>
                                                 </a>
                                             </h2>
                                             <?php
-                                            if ($proponente) {
+                                            if ($solicitante) {
                                             ?>
-                                                <div class="w-100 d-flex justify-content-between align-items-center">
-                                                    <span><strong>Proponente:</strong> <i><?php echo $proponente; ?></i></span>
+                                                <div class="w-100 d-flex justify-content-between align-items-center proponente-tab">
+                                                    <span><strong>Proponente:</strong> <i><?php echo $solicitante; ?></i></span>
                                                 <?php } else { ?>
                                                     <div class="w-100 d-flex justify-content-end align-items-center">
                                                     <?php } ?>
@@ -335,11 +385,11 @@ $iniciativa_tipo = array(
                                                         <div class="row mb-4">
                                                             <div class="col-sm-12">
                                                                 <ul class="list-no-style">
-                                                                    <?php if ($iniciativa) : ?>
+                                                                    <?php /* if ($iniciativa) : ?>
                                                                         <li><strong>Iniciativa:</strong> <?php echo $iniciativa_tipo[$iniciativa]; ?></li>
-                                                                    <?php endif ?>
-                                                                    <?php if ($proponente) : ?>
-                                                                        <li><strong>Proponente:</strong> <?php echo $proponente; ?></li>
+                                                                    <?php endif */ ?>
+                                                                    <?php if ($solicitante) : ?>
+                                                                        <li><strong>Proponente:</strong> <?php echo $solicitante; ?></li>
                                                                     <?php endif ?>
                                                                     <?php if ($comision) : ?>
                                                                         <li><strong>Comisión:</strong> <?php echo get_the_title($comision); ?></li>
@@ -388,7 +438,6 @@ $iniciativa_tipo = array(
                                                                                         'otras-organizaciones'
                                                                                     );
                                                                                     $votos = mocion_votacion_fase_aprobacion(get_the_ID(), $index, $partidos_lista);
-
                                                                                     $partidos_info = array(
                                                                                         'partidosinfo' => array(
                                                                                             /**
@@ -415,8 +464,11 @@ $iniciativa_tipo = array(
                                                                                     );
 
                                                                                     if ($votos) {
+                                                                                        
                                                                                     ?>
-                                                                                        <span class="fs-12 ta-c"><a class="text-black-light show_votacion" href="#" data-toggle="modal" data-target="#votacion_ordenanza" data-modaltitle="<?php echo get_the_title(); ?>" data-partidosinfo='<?php echo json_encode($partidos_info); ?>'>Ver Votación</a></span>
+                                                                                        <span class="fs-12 ta-c"><a class="text-black-light show_votacion" href="#" data-toggle="modal" data-target="#votacion_ordenanza" data-modaltitle="<?php echo get_the_title(); ?>" 
+                                                                                        data-mocion="<?php echo $votos[0]['mocion_id']; ?>" data-mocionname="<?php echo get_the_title($votos[0]['mocion_id']); ?>" data-partidosinfo='<?php echo json_encode($partidos_info); ?>'>Ver Votación</a></span>
+                                                                                        
                                                                                 <?php }
                                                                                 } ?>
                                                                             </div>
@@ -437,7 +489,11 @@ $iniciativa_tipo = array(
                                                     </div>
                                                 </div>
                                         </div>
-                                    <?php $counter++;
+                                    <?php 
+                                    if($counter % 8 == 0){
+                                        $grupo++;
+                                    }
+                                    $counter++;                                        
                                 } // END While 
                                     ?>
                                     </div>
@@ -462,12 +518,12 @@ $iniciativa_tipo = array(
             <div class="modal-body">
                 <div id="chartdiv"></div>
                 <div class="w-100 d-flex justify-content-center">
-                    <div class="btn-oda excel-ranking">
+                    <div class="btn-oda excel-votacion">
                         <span class="button-name">Excel</span>
                         <span class="button-icon"><i class="fas fa-download"></i></span>
                     </div>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <div class="btn-oda csv-ranking">
+                    <div class="btn-oda csv-votacion">
                         <span class="button-name">CSV</span>
                         <span class="button-icon"><i class="fas fa-download"></i></span>
                     </div>
@@ -477,8 +533,152 @@ $iniciativa_tipo = array(
     </div>
 </div>
 <?php get_footer(); ?>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
+    $(document).ready(function() {
+        var cityid = <?php echo $item->ID; ?>;
+        var citiName = '<?php echo $item->post_title; ?>';
+        // Clic en EXCEL
+        $('.excel-ranking').click( function(){            
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_listado_ordenanzas_xls',
+                    city: cityid,
+                    cityname:citiName
+                },
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    var $a = $("<a>");
+                    $a.attr("href",data.file);
+                    $("body").append($a);
+                    $a.attr("download","OC_listado_ordenanzas_concejo_municipal_"+citiName+".xls");
+                    $a[0].click();
+                    $a.remove();                   
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
 
+            })
+
+        })
+        // Clic en CSV 
+        $('.csv-ranking').click( function(){
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_csv_listado_ordenanzas',
+                    city: cityid
+                },
+                
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'OC_listado_ordenanzas_concejo_municipal_'+citiName+'.csv';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+
+        // Clic en CSV VOTACION
+        $('.csv-votacion').click( function(){
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_csv_votacion',
+                    city: cityid,
+                    mocion: activeMocion
+                },
+                
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    //console.log(data);
+                    
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    activeMocionName = activeMocionName.replace(' ','-');
+                    a.download = 'OC_Votacion_'+activeMocionName+'_'+citiName+'.csv';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+        $('.excel-votacion').click( function(){            
+            $.ajax({
+                url: oda_dom_vars.ajaxurl,
+                type: 'GET',
+                data: {
+                    action: 'oda_generate_votacion_xls',
+                    city: cityid,
+                    mocion: activeMocion
+                },
+                beforeSend: function(){
+                    $('body').toggleClass('loading-overlay-showing');
+                },
+                success: function(data){
+                    $('body').toggleClass('loading-overlay-showing');
+                    console.log(data);
+                    var $a = $("<a>");
+                    $a.attr("href",data.file);
+                    $("body").append($a);
+                    activeMocionName = activeMocionName.replace(' ','-');
+                    $a.attr("download",'OC_Votacion_'+activeMocionName+'_'+citiName+'.xls');
+                    $a[0].click();
+                    $a.remove();                   
+                },
+                error: function(xhr,err){
+                    console.log(err);
+                    console.log(xhr);
+                }
+
+            })
+
+        })
+    })
 </script>
